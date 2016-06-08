@@ -31,6 +31,10 @@ module Proofer
         confirmation
       end
 
+      def coerce_vendor_applicant(applicant)
+        Proofer::Applicant.new applicant
+      end
+
       private
 
       def build_verification

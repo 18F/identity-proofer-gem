@@ -19,12 +19,14 @@ module Proofer
         raise "#{self} must implement submit_answers() method"
       end
 
-      private
-
       def coerce_applicant(applicant)
         return if applicant.nil?
         return applicant if applicant.is_a?(Proofer::Applicant)
-        Proofer::Applicant.new(applicant)
+        coerce_vendor_applicant(applicant)
+      end
+
+      def coerce_vendor_applicant(applicant)
+        raise "#{self} must implement coerce_vendor_applicant()"
       end
     end
   end

@@ -1,6 +1,8 @@
 module Proofer
   class Agent
     attr_accessor :vendor
+    extend Forwardable
+    def_delegators :@_vendor, :applicant, :start, :submit_questions
 
     def initialize(opts)
       self.vendor = opts[:vendor] or raise ArgumentError, ":vendor required"

@@ -49,7 +49,22 @@ describe Proofer::Vendor::Mock do
     it 'sets confirmation false if wrong answer given' do
       mocker = described_class.new applicant: applicant
       question_set = mocker.start.questions
+      Proofer::Vendor::Mock::ANSWERS.each do |ques, answ|
+        question_set.find_by_key(ques).answer = answ
+      end
       question_set.find_by_key('city').answer = 'GONDOR'
+      confirmation = mocker.submit_answers question_set
+      expect(confirmation).to be_a Proofer::Confirmation
+      expect(confirmation.success).to eq false
+    end
+
+    it 'sets confirmation false if missing answer' do
+      mocker = described_class.new applicant: applicant
+      question_set = mocker.start.questions
+      Proofer::Vendor::Mock::ANSWERS.each do |ques, answ|
+        question_set.find_by_key(ques).answer = answ
+      end
+      question_set.find_by_key('city').answer = nil
       confirmation = mocker.submit_answers question_set
       expect(confirmation).to be_a Proofer::Confirmation
       expect(confirmation.success).to eq false

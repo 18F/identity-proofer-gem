@@ -38,7 +38,9 @@ describe Proofer::Vendor::Mock do
     it 'submits question/answer set' do
       mocker = described_class.new applicant: applicant
       question_set = mocker.start.questions
-      question_set.first.answer = 'NONE OF THE ABOVE'
+      Proofer::Vendor::Mock::ANSWERS.each do |ques, answ|
+        question_set.find_by_key(ques).answer = answ
+      end
       confirmation = mocker.submit_answers question_set
       expect(confirmation).to be_a Proofer::Confirmation
       expect(confirmation.success).to eq true
@@ -47,7 +49,7 @@ describe Proofer::Vendor::Mock do
     it 'sets confirmation false if wrong answer given' do
       mocker = described_class.new applicant: applicant
       question_set = mocker.start.questions
-      question_set.first.answer = 'GONDOR'
+      question_set.find_by_key('city').answer = 'GONDOR'
       confirmation = mocker.submit_answers question_set
       expect(confirmation).to be_a Proofer::Confirmation
       expect(confirmation.success).to eq false

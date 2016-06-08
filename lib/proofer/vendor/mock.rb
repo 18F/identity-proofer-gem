@@ -7,7 +7,8 @@ module Proofer
         'city'  => 'None of the Above',
         'color' => 'green',
         'speed' => '55',
-        'quest' => 'proof'
+        'quest' => 'proof',
+        'bear'  => 'schools'
       }.freeze
 
       def submit_answers(question_set)
@@ -46,6 +47,17 @@ module Proofer
               Proofer::QuestionChoice.new( key: 'Hogsmeade', display: 'Hogsmeade' ),
               Proofer::QuestionChoice.new( key: 'None of the Above', display: 'None of the Above <-- PASS' )
             ]   
+          ),
+          Proofer::Question.new(
+            key: 'bear',
+            display: 'What bear is best?',
+            choices: [
+              Proofer::QuestionChoice.new( key: 'black', display: 'Black bear' ),
+              Proofer::QuestionChoice.new( key: 'polar', display: 'Polar bear' ),
+              Proofer::QuestionChoice.new( key: 'grizzly', display: 'Grizzly bear' ),
+              Proofer::QuestionChoice.new( key: 'schools', display: 'There are two schools of thought <-- PASS' ),
+              Proofer::QuestionChoice.new( key: 'ridiculous', display: 'This is a ridiculous question' )
+            ]
           ),
           Proofer::Question.new(
             key: 'quest',

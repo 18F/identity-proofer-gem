@@ -12,7 +12,7 @@ describe Proofer::Vendor::Mock do
       address1: '1234 Main St',
       city: 'Anytown',
       state: 'KS',
-      zip: '66666'
+      zipcode: '66666'
     }   
   end
 

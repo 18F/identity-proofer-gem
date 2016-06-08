@@ -12,7 +12,10 @@ module Proofer
       end
 
       def start(args = nil)
-        raise "#{self} must implement start() method"
+        if args && !applicant
+          self.applicant = coerce_applicant(args)
+        end
+        perform_resolution
       end
 
       def submit_answers(question_set)
@@ -27,6 +30,10 @@ module Proofer
 
       def coerce_vendor_applicant(applicant)
         raise "#{self} must implement coerce_vendor_applicant()"
+      end
+
+      def perform_resolution
+        raise "#{self} must implement perform_resolution"
       end
     end
   end

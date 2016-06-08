@@ -10,13 +10,6 @@ module Proofer
         'quest' => 'proof'
       }.freeze
 
-      def start(args = nil)
-        if args && !applicant
-          self.applicant = args
-        end
-        build_resolution
-      end
-
       def submit_answers(question_set)
         confirmation = Proofer::Confirmation.new success: true
         question_set.each do |question|
@@ -35,11 +28,11 @@ module Proofer
         Proofer::Applicant.new applicant
       end
 
-      private
-
-      def build_resolution
+      def perform_resolution
         Proofer::Resolution.new success: true, questions: build_questions
       end
+
+      private
 
       def build_questions
         Proofer::QuestionSet.new([

@@ -7,9 +7,11 @@ module Proofer
 
     def initialize(opts)
       self.success = opts[:success]
-      self.questions = opts[:questions].is_a?(Proofer::QuestionSet) \
-        ? opts[:questions] \
-        : Proofer::QuestionSet.new(opts[:questions])
+      if opts[:questions] && opts[:questions].is_a?(Proofer::QuestionSet)
+        self.questions = opts[:questions]
+      elsif opts[:questions]
+        self.questions = Proofer::QuestionSet.new(opts[:questions])
+      end
     end
   end
 end

@@ -9,7 +9,7 @@ module Proofer
 
     attr_accessor :questions
 
-    def initialize(questions)
+    def initialize(questions = [])
       self.questions = questions
     end
 

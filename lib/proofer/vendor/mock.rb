@@ -4,7 +4,7 @@ module Proofer
   module Vendor
     class Mock < VendorBase
       ANSWERS = {
-        'city'  => 'NONE OF THE ABOVE',
+        'city'  => 'None of the Above',
         'color' => 'green',
         'speed' => '55',
         'quest' => 'proof'
@@ -43,11 +43,11 @@ module Proofer
             key: 'city',
             display: 'Where did you live 10 years ago?',
             choices: [
-              Proofer::QuestionChoice.new( key: 'METROPOLIS', display: 'METROPOLIS' ),
-              Proofer::QuestionChoice.new( key: 'GOTHAM', display: 'GOTHAM' ),
-              Proofer::QuestionChoice.new( key: 'GONDOR', display: 'GONDOR' ),
-              Proofer::QuestionChoice.new( key: 'HOGSMEADE', display: 'HOGSMEADE' ),
-              Proofer::QuestionChoice.new( key: 'NONE OF THE ABOVE', display: 'NONE OF THE ABOVE <-- PASS' )
+              Proofer::QuestionChoice.new( key: 'Metropolis', display: 'Metropolis' ),
+              Proofer::QuestionChoice.new( key: 'Gotham', display: 'Gotham' ),
+              Proofer::QuestionChoice.new( key: 'Gondor', display: 'Gondor' ),
+              Proofer::QuestionChoice.new( key: 'Hogsmeade', display: 'Hogsmeade' ),
+              Proofer::QuestionChoice.new( key: 'None of the Above', display: 'None of the Above <-- PASS' )
             ]   
           ),
           Proofer::Question.new(

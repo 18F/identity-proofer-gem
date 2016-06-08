@@ -14,7 +14,7 @@ module Proofer
         if args && !applicant
           self.applicant = args
         end
-        build_verification
+        build_resolution
       end
 
       def submit_answers(question_set)
@@ -37,8 +37,8 @@ module Proofer
 
       private
 
-      def build_verification
-        Proofer::Verification.new success: true, questions: build_questions
+      def build_resolution
+        Proofer::Resolution.new success: true, questions: build_questions
       end
 
       def build_questions

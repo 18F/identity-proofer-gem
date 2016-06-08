@@ -1,7 +1,7 @@
 require 'proofer/question_set'
 
 module Proofer
-  class Verification
+  class Resolution
     attr_accessor :success
     attr_accessor :questions
 

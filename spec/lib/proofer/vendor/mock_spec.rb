@@ -27,10 +27,10 @@ describe Proofer::Vendor::Mock do
   describe '#start' do
     it 'begins proofing cycle' do
       mocker = described_class.new
-      verification = mocker.start applicant
-      expect(verification).to be_a Proofer::Verification
-      expect(verification.success).to eq true
-      expect(verification.questions).to be_a Proofer::QuestionSet
+      resolution = mocker.start applicant
+      expect(resolution).to be_a Proofer::Resolution
+      expect(resolution.success).to eq true
+      expect(resolution.questions).to be_a Proofer::QuestionSet
     end
   end
 

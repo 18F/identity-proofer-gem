@@ -1,6 +1,6 @@
 require 'proofer/question_set'
 require 'proofer/confirmation'
-require 'proofer/verification'
+require 'proofer/resolution'
 
 module Proofer
   module Vendor

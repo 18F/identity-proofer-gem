@@ -1,9 +1,6 @@
 module Proofer
   class Question
-    attr_accessor :display
-    attr_accessor :key
-    attr_accessor :choices
-    attr_accessor :answer
+    attr_accessor :display, :key, :choices, :answer
 
     def initialize(params)
       params.each do |k, v|

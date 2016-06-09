@@ -10,5 +10,9 @@ module Proofer
         instance_variable_set("@#{k}", v)
       end
     end
+
+    def choices_as_hash
+      Hash[choices.collect { |choice| [choice.key, choice.display] }]
+    end
   end
 end

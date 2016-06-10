@@ -1,6 +1,8 @@
 module Proofer
   class Applicant
-    attr_accessor :first_name, :last_name, :address1, :address2, :city, :state, :zipcode, :ssn, :dob, :phone
+    attr_accessor :first_name, :last_name, :middle_name
+    attr_accessor :address1, :address2, :city, :state, :zipcode
+    attr_accessor :ssn, :dob, :phone, :ccn
 
     def initialize(params)
       params.each do |k, v|

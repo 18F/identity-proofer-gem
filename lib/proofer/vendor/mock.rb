@@ -11,7 +11,7 @@ module Proofer
         'bear'  => 'schools'
       }.freeze
 
-      def submit_answers(question_set)
+      def submit_answers(question_set, session_id = nil)
         confirmation = Proofer::Confirmation.new success: true
         question_set.each do |question|
           if !question.answer

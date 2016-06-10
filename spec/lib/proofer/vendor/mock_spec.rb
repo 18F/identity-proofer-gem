@@ -30,6 +30,7 @@ describe Proofer::Vendor::Mock do
       resolution = mocker.start applicant
       expect(resolution).to be_a Proofer::Resolution
       expect(resolution.success).to eq true
+      expect(resolution.session_id).to_not be_nil
       expect(resolution.questions).to be_a Proofer::QuestionSet
     end
   end

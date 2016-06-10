@@ -7,6 +7,7 @@ module Proofer
     def initialize(opts)
       self.success = opts[:success]
       self.vendor_resp = opts[:vendor_resp]
+      self.session_id = opts[:session_id]
       if opts[:questions] && opts[:questions].is_a?(Proofer::QuestionSet)
         self.questions = opts[:questions]
       elsif opts[:questions]

@@ -30,7 +30,12 @@ module Proofer
       end
 
       def perform_resolution
-        Proofer::Resolution.new success: true, questions: build_questions
+        Proofer::Resolution.new(
+          success: true,
+          questions: build_questions,
+          vendor_resp: { kbv: 'some questions here' },
+          session_id: SecureRandom.uuid
+        )
       end
 
       private

@@ -18,7 +18,7 @@ module Proofer
         perform_resolution
       end
 
-      def submit_answers(question_set)
+      def submit_answers(question_set, session_id)
         raise "#{self} must implement submit_answers() method"
       end
 

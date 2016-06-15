@@ -2,8 +2,9 @@ module Proofer
   class Applicant
     attr_accessor :first_name, :last_name, :middle_name, :gen
     attr_accessor :address1, :address2, :city, :state, :zipcode
-    attr_accessor :ssn, :dob, :phone, :ccn
+    attr_accessor :ssn, :dob, :phone
     attr_accessor :drivers_license_state, :drivers_license_id, :passport_id, :military_id
+    attr_accessor :ccn, :mortgage, :home_equity_line, :auto_loan
 
     def initialize(params)
       params.each do |k, v|

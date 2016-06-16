@@ -12,17 +12,19 @@ module Proofer
       }.freeze
 
       def submit_answers(question_set, session_id = nil)
-        confirmation = Proofer::Confirmation.new success: true
+        ok = true
         question_set.each do |question|
           if !question.answer
-            confirmation.success = false
-          else
-            if ANSWERS[question.key] != question.answer
-              confirmation.success = false
-            end
+            ok = false
+          elsif ANSWERS[question.key] != question.answer
+            ok = false
           end
         end
-        confirmation
+        if ok
+          successful_confirmation({ ok: ok })
+        else
+          failed_confirmation({ ok: ok })
+        end
       end
 
       def coerce_vendor_applicant(applicant)
@@ -30,17 +32,10 @@ module Proofer
       end
 
       def perform_resolution
-        Proofer::Resolution.new(
-          success: true,
-          questions: build_questions,
-          vendor_resp: { kbv: 'some questions here' },
-          session_id: SecureRandom.uuid
-        )
+        successful_resolution({ kbv: 'some questions here' }, SecureRandom.uuid)
       end
 
-      private
-
-      def build_questions
+      def build_question_set(_vendor_resp)
         Proofer::QuestionSet.new([
           Proofer::Question.new(
             key: 'city',

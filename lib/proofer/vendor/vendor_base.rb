@@ -19,7 +19,7 @@ module Proofer
       end
 
       def submit_answers(question_set, session_id)
-        raise "#{self} must implement submit_answers() method"
+        raise NoMethodError, "#{self} must implement submit_answers() method"
       end
 
       def coerce_applicant(applicant)
@@ -29,11 +29,40 @@ module Proofer
       end
 
       def coerce_vendor_applicant(applicant)
-        raise "#{self} must implement coerce_vendor_applicant()"
+        raise NoMethodError, "#{self} must implement coerce_vendor_applicant()"
       end
 
       def perform_resolution
-        raise "#{self} must implement perform_resolution"
+        raise NoMethodError, "#{self} must implement perform_resolution"
+      end
+
+      def successful_resolution(vendor_resp, session_id)
+        Proofer::Resolution.new(
+          success: true,
+          questions: build_question_set(vendor_resp),
+          vendor_resp: vendor_resp,
+          session_id: session_id
+        )
+      end
+
+      def failed_resolution(vendor_resp, session_id)
+        Proofer::Resolution.new(
+          success: false,
+          vendor_resp: vendor_resp,
+          session_id: session_id
+        )
+      end
+
+      def build_question_set(vendor_resp)
+        raise NoMethodError, "#{self} must implement build_question_set"
+      end
+
+      def successful_confirmation(vendor_resp)
+        Proofer::Confirmation.new success: true, vendor_resp: vendor_resp
+      end
+
+      def failed_confirmation(vendor_resp)
+        Proofer::Confirmation.new success: false, vendor_resp: vendor_resp
       end
     end
   end

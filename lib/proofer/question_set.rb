@@ -7,10 +7,11 @@ module Proofer
     extend Forwardable
     def_delegators :questions, :each, :<<, :[]
 
-    attr_accessor :questions
+    attr_accessor :questions, :id
 
-    def initialize(questions = [])
+    def initialize(questions = [], id = nil)
       self.questions = questions
+      self.id = id
     end
 
     def find_by_key(key)

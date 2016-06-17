@@ -6,9 +6,11 @@ module Proofer
   module Vendor
     class VendorBase
       attr_accessor :applicant
+      attr_accessor :options
 
       def initialize(opts = {})
         self.applicant = coerce_applicant opts[:applicant]
+        self.options = opts
       end
 
       def start(args = nil)

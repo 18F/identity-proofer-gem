@@ -40,4 +40,12 @@ describe Proofer::Agent do
       expect(confirmation.success).to eq true
     end
   end
+
+  describe '#applicant=' do
+    it 'delegates to vendor' do
+      agent = Proofer::Agent.new vendor: :mock
+      agent.applicant = applicant
+      expect(agent.applicant).to eq applicant
+    end
+  end
 end

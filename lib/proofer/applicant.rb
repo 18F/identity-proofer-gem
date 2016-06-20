@@ -4,7 +4,7 @@ module Proofer
     attr_accessor :address1, :address2, :city, :state, :zipcode
     attr_accessor :ssn, :dob, :phone
     attr_accessor :drivers_license_state, :drivers_license_id, :passport_id, :military_id
-    attr_accessor :ccn, :mortgage, :home_equity_line, :auto_loan
+    attr_accessor :ccn, :mortgage, :home_equity_line, :auto_loan, :bank_acct, :bank_routing
 
     def initialize(params)
       params.each do |k, v|

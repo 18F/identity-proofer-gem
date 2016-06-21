@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{Identity Proofer for Ruby}
   s.date = Time.now.utc.strftime("%Y-%m-%d")
   s.files = Dir.glob("app/**/*") + Dir.glob("lib/**/*") + [
-     "LICENSE",
+     "LICENSE.md",
      "README.md",
      "Gemfile",
      "proofer.gemspec"

@@ -5,25 +5,27 @@ module Proofer
     class Mock < VendorBase
       ANSWERS = {
         'city'  => 'None of the Above',
-        'color' => 'green',
+        'color' => 'blue',
         'speed' => '55',
         'quest' => 'proof',
         'bear'  => 'schools'
       }.freeze
 
       def submit_answers(question_set, session_id = nil)
-        ok = true
+        report = {}
         question_set.each do |question|
           if !question.answer
-            ok = false
+            report[question.key] = false
           elsif ANSWERS[question.key] != question.answer
-            ok = false
+            report[question.key] = false
+          else
+            report[question.key] = true
           end
         end
-        if ok
-          successful_confirmation({ ok: ok })
+        unless report.values.include?(false)
+          successful_confirmation({ report: report })
         else
-          failed_confirmation({ ok: ok })
+          failed_confirmation({ report: report })
         end
       end
 

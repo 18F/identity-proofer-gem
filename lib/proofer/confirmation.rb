@@ -6,5 +6,9 @@ module Proofer
       self.success = opts[:success]
       self.vendor_resp = opts[:vendor_resp]
     end
+
+    def success?
+      success == true
+    end
   end
 end

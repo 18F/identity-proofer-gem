@@ -31,6 +31,7 @@ describe Proofer::Agent do
       agent = Proofer::Agent.new vendor: :mock
       resolution = agent.start applicant
       expect(resolution.success).to eq true
+      expect(resolution.success?).to eq true
 
       question_set = resolution.questions
       Proofer::Vendor::Mock::ANSWERS.each do |ques, answ|
@@ -38,6 +39,7 @@ describe Proofer::Agent do
       end
       confirmation = agent.submit_answers question_set
       expect(confirmation.success).to eq true
+      expect(confirmation.success?).to eq true
     end
   end
 

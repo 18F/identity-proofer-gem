@@ -14,5 +14,9 @@ module Proofer
         self.questions = Proofer::QuestionSet.new(opts[:questions])
       end
     end
+
+    def success?
+      success == true
+    end
   end
 end

@@ -33,6 +33,22 @@ describe Proofer::Vendor::Mock do
       expect(resolution.session_id).to_not be_nil
       expect(resolution.questions).to be_a Proofer::QuestionSet
     end
+
+    it 'fails on Bad first name' do
+      mocker = described_class.new
+      resolution = mocker.start({ first_name: 'Bad' })
+      expect(resolution).to be_a Proofer::Resolution
+      expect(resolution.success).to eq false
+      expect(resolution.questions).to be_nil
+    end
+
+    it 'fails on 6666 SSN' do
+      mocker = described_class.new
+      resolution = mocker.start({ ssn: '6666' })
+      expect(resolution).to be_a Proofer::Resolution
+      expect(resolution.success).to eq false
+      expect(resolution.questions).to be_nil
+    end
   end
 
   describe '#submit_answers' do

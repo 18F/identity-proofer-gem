@@ -2,7 +2,8 @@
 
 See example code in `spec/`.
 
-[![Build Status](https://travis-ci.org/18F/identity-proofer-gem.svg?branch=master)](https://travis-ci.org/18F/identity-proofer-gem)[![security](https://hakiri.io/github/18F/identity-proofer-gem/master.svg)](https://hakiri.io/github/18F/identity-proofer-gem/master)
+[![Build Status](https://travis-ci.org/18F/identity-proofer-gem.svg?branch=master)](https://travis-ci.org/18F/identity-proofer-gem)
+[![security](https://hakiri.io/github/18F/identity-proofer-gem/master.svg)](https://hakiri.io/github/18F/identity-proofer-gem/master)
 
 ## Public domain
 

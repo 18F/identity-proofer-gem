@@ -56,6 +56,7 @@ module Proofer
       end
 
       def build_question_set(vendor_resp)
+        return nil if options[:kbv] == false
         raise NoMethodError, "#{self} must implement build_question_set"
       end
 

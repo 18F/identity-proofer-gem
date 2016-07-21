@@ -44,6 +44,8 @@ module Proofer
       end
 
       def build_question_set(_vendor_resp)
+        return nil if options[:kbv] == false
+
         Proofer::QuestionSet.new([
           Proofer::Question.new(
             key: 'city',

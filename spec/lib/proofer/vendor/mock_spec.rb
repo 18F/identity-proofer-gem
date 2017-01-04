@@ -96,4 +96,40 @@ describe Proofer::Vendor::Mock do
       expect(confirmation.success).to eq false
     end
   end
+
+  describe '#submit_financials' do
+    it 'succeeds with credit card' do
+       mocker = described_class.new applicant: applicant
+       resolution = mocker.start
+       confirmation = mocker.submit_financials({ccn: '12345678'}, resolution.session_id)
+
+       expect(confirmation.success).to eq true
+    end
+
+    it 'fails with bad credit card' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_financials({ccn: '00000000'}, resolution.session_id)
+
+      expect(confirmation.success).to eq false
+    end
+  end
+
+  describe '#submit_phone' do
+    it 'succeeds with all fives' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_phone('(555) 555-5555', resolution.session_id)
+
+      expect(confirmation.success).to eq true
+    end
+
+    it 'fails without all fives' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_phone('(555) 555-1234', resolution.session_id)
+
+      expect(confirmation.success).to eq false
+    end
+  end
 end

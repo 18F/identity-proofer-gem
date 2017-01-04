@@ -37,9 +37,15 @@ describe Proofer::Agent do
       Proofer::Vendor::Mock::ANSWERS.each do |ques, answ|
         question_set.find_by_key(ques).answer = answ
       end
-      confirmation = agent.submit_answers question_set
-      expect(confirmation.success).to eq true
-      expect(confirmation.success?).to eq true
+      qa_confirmation = agent.submit_answers question_set
+      expect(qa_confirmation.success).to eq true
+      expect(qa_confirmation.success?).to eq true
+
+      financials_confirmation = agent.submit_financials ccn: '12345678'
+      expect(financials_confirmation.success).to eq true
+
+      phone_confirmation = agent.submit_phone '(555) 555-5555'
+      expect(phone_confirmation.success).to eq true
     end
   end
 

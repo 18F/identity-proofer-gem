@@ -29,7 +29,7 @@ module Proofer
       end
 
       def submit_phone(phone_number, session_id = nil)
-        if phone_number == '(555) 555-5555'
+        if phone_number =~ /\A(\+1 )?\(555\) 555\-5555\z/
           successful_confirmation(session: session_id)
         else
           failed_confirmation(session: session_id)

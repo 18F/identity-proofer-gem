@@ -21,15 +21,15 @@ module Proofer
       end
 
       def submit_answers(question_set, session_id)
-        raise NoMethodError, "#{self} must implement submit_answers() method"
+        raise NotImplementedError, "#{self} must implement submit_answers() method"
       end
 
       def submit_financials(financials, session_id)
-        raise NoMethodError, "#{self} must implement submit_financials() method"
+        raise NotImplementedError, "#{self} must implement submit_financials() method"
       end
 
       def submit_phone(phone_number, session_id)
-        raise NoMethodError, "#{self} must implement submit_phone() method"
+        raise NotImplementedError, "#{self} must implement submit_phone() method"
       end
 
       def coerce_applicant(applicant)
@@ -39,11 +39,11 @@ module Proofer
       end
 
       def coerce_vendor_applicant(applicant)
-        raise NoMethodError, "#{self} must implement coerce_vendor_applicant()"
+        raise NotImplementedError, "#{self} must implement coerce_vendor_applicant()"
       end
 
       def perform_resolution
-        raise NoMethodError, "#{self} must implement perform_resolution"
+        raise NotImplementedError, "#{self} must implement perform_resolution"
       end
 
       def successful_resolution(vendor_resp, session_id)
@@ -65,7 +65,7 @@ module Proofer
 
       def build_question_set(vendor_resp)
         return nil if options[:kbv] == false
-        raise NoMethodError, "#{self} must implement build_question_set"
+        raise NotImplementedError, "#{self} must implement build_question_set"
       end
 
       def successful_confirmation(vendor_resp)

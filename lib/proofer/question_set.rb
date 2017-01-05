@@ -15,7 +15,7 @@ module Proofer
     end
 
     def find_by_key(key)
-      questions.select { |question| question.key == key }.first
+      questions.find { |question| question.key == key }
     end
   end
 end

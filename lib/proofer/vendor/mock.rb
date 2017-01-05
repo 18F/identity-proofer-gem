@@ -29,7 +29,8 @@ module Proofer
       end
 
       def submit_phone(phone_number, session_id = nil)
-        if phone_number == '(555) 555-5555'
+        plain_phone = phone_number.gsub(/\D/, '').gsub(/\A1/, '')
+        if plain_phone == '5555555555'
           successful_confirmation(session: session_id)
         else
           failed_confirmation(session: session_id)

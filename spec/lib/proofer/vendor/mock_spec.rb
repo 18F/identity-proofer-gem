@@ -132,6 +132,14 @@ describe Proofer::Vendor::Mock do
       expect(confirmation.success).to eq true
     end
 
+    it 'succeeds with +1 prefix' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_phone('+1 (555) 555-5555', resolution.session_id)
+
+      expect(confirmation.success).to eq true
+    end
+
     it 'fails without all fives' do
       mocker = described_class.new applicant: applicant
       resolution = mocker.start

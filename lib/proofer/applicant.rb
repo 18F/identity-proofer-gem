@@ -7,11 +7,9 @@ module Proofer
     attr_accessor :ccn, :mortgage, :home_equity_line, :auto_loan, :bank_acct, :bank_routing
 
     def initialize(params)
-      params.each do |k, v|
-        unless self.respond_to?(k)
-          raise ArgumentError, "Invalid parameter: #{k}"
-        end
-        instance_variable_set("@#{k}", v)
+      params.each do |attr, value|
+        raise ArgumentError, "Invalid parameter: #{attr}" unless respond_to?(attr)
+        instance_variable_set("@#{attr}", value)
       end
     end
   end

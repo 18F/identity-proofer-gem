@@ -8,9 +8,9 @@ describe Proofer::Applicant do
     end
 
     it 'throws exception with invalid params' do
-      expect {
-        applicant = described_class.new foo: 'bar'
-      }.to raise_error ArgumentError
+      expect do
+        described_class.new foo: 'bar'
+      end.to raise_error ArgumentError
     end
   end
 end

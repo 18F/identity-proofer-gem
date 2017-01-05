@@ -3,8 +3,8 @@ module Proofer
     attr_accessor :display, :key, :choices, :answer
 
     def initialize(params)
-      params.each do |k, v|
-        instance_variable_set("@#{k}", v)
+      params.each do |attr, value|
+        instance_variable_set("@#{attr}", value)
       end
     end
 

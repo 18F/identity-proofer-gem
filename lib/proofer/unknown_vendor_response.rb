@@ -1,4 +1,4 @@
 module Proofer
-  class UnknownVendorResponse < Exception
+  class UnknownVendorResponse < RuntimeError
   end
 end

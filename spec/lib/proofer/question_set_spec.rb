@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Proofer::QuestionSet do
-  let(:question_one) { Proofer::Question.new( key: 'foo', display: 'Foo' ) }
-  let(:question_two) { Proofer::Question.new( key: 'bar', display: 'Bar' ) }
+  let(:question_one) { Proofer::Question.new(key: 'foo', display: 'Foo') }
+  let(:question_two) { Proofer::Question.new(key: 'bar', display: 'Bar') }
   let(:question_set) { described_class.new([question_one, question_two]) }
 
   describe '#new' do

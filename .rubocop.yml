@@ -1,0 +1,63 @@
+# This configuration only includes the cops that differ from the Rubocop
+# defaults, which can be found here:
+# https://github.com/bbatsov/rubocop/blob/master/config/default.yml
+# https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml
+# https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml
+
+AllCops:
+  TargetRubyVersion: 2.3
+  UseCache: true
+  Exclude:
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'proofer.gemspec'
+
+Metrics/AbcSize:
+  Description: A calculated magnitude based on number of assignments, branches, and
+    conditions.
+  Enabled: true
+  Max: 15
+  Exclude:
+  - spec/**/*
+
+Metrics/ClassLength:
+  Description: Avoid classes longer than 150 lines of code.
+  Enabled: true
+  CountComments: false
+  Max: 150
+  Exclude:
+  - spec/**/*
+
+Metrics/LineLength:
+  Description: Limit lines to 120 characters.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#80-character-limits
+  Enabled: true
+  Max: 120
+  AllowURI: true
+  URISchemes:
+  - http
+  - https
+
+Style/FrozenStringLiteralComment:
+  Description: >-
+                 Add the frozen_string_literal comment to the top of files
+                 to help transition from Ruby 2.3.0 to Ruby 3.0.
+  Enabled: false
+
+Style/AndOr:
+  Description: Use &&/|| instead of and/or.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-and-or-or
+  EnforcedStyle: conditionals
+  SupportedStyles:
+  - always
+  - conditionals
+
+Style/Documentation:
+  Description: Document classes and non-namespace modules.
+  Enabled: false
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+
+Style/IfUnlessModifier:
+  Enabled: false

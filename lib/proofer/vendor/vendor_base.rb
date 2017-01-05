@@ -24,6 +24,14 @@ module Proofer
         raise NoMethodError, "#{self} must implement submit_answers() method"
       end
 
+      def submit_financials(financials, session_id)
+        raise NoMethodError, "#{self} must implement submit_financials() method"
+      end
+
+      def submit_phone(phone_number, session_id)
+        raise NoMethodError, "#{self} must implement submit_phone() method"
+      end
+
       def coerce_applicant(applicant)
         return if applicant.nil?
         return applicant if applicant.is_a?(Proofer::Applicant)

@@ -23,9 +23,25 @@ module Proofer
           end
         end
         unless report.values.include?(false)
-          successful_confirmation({ report: report })
+          successful_confirmation(report: report)
         else
-          failed_confirmation({ report: report })
+          failed_confirmation(report: report)
+        end
+      end
+
+      def submit_financials(financials, session_id = nil)
+        if financials.is_a?(Hash) && financials[:ccn] == '12345678'
+          successful_confirmation(ok: true)
+        else
+          failed_confirmation(ok: false)
+        end
+      end
+
+      def submit_phone(phone_number, session_id = nil)
+        if phone_number == '(555) 555-5555'
+          successful_confirmation(ok: true)
+        else
+          failed_confirmation(ok: false)
         end
       end
 

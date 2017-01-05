@@ -20,15 +20,15 @@ module Proofer
         perform_resolution
       end
 
-      def submit_answers(question_set, session_id)
+      def submit_answers(_question_set, _session_id)
         raise NotImplementedError, "#{self} must implement submit_answers() method"
       end
 
-      def submit_financials(financials, session_id)
+      def submit_financials(_financials, _session_id)
         raise NotImplementedError, "#{self} must implement submit_financials() method"
       end
 
-      def submit_phone(phone_number, session_id)
+      def submit_phone(_phone_number, _session_id)
         raise NotImplementedError, "#{self} must implement submit_phone() method"
       end
 
@@ -38,7 +38,7 @@ module Proofer
         coerce_vendor_applicant(applicant)
       end
 
-      def coerce_vendor_applicant(applicant)
+      def coerce_vendor_applicant(_applicant)
         raise NotImplementedError, "#{self} must implement coerce_vendor_applicant()"
       end
 
@@ -63,7 +63,7 @@ module Proofer
         )
       end
 
-      def build_question_set(vendor_resp)
+      def build_question_set(_vendor_resp)
         return nil if options[:kbv] == false
         raise NotImplementedError, "#{self} must implement build_question_set"
       end

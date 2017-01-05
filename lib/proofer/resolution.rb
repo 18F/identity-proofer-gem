@@ -8,10 +8,11 @@ module Proofer
       self.success = opts[:success]
       self.vendor_resp = opts[:vendor_resp]
       self.session_id = opts[:session_id]
-      if opts[:questions] && opts[:questions].is_a?(Proofer::QuestionSet)
-        self.questions = opts[:questions]
-      elsif opts[:questions]
-        self.questions = Proofer::QuestionSet.new(opts[:questions])
+      questions = opts[:questions]
+      if questions && questions.is_a?(Proofer::QuestionSet)
+        self.questions = questions
+      elsif questions
+        self.questions = Proofer::QuestionSet.new(questions)
       end
     end
 

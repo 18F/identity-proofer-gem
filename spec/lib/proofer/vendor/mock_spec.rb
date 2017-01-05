@@ -4,7 +4,7 @@ require 'proofer/vendor/mock'
 
 describe Proofer::Vendor::Mock do
   let(:applicant) do
-    {   
+    {
       first_name: 'Some',
       last_name: 'One',
       dob: '19700501',
@@ -13,12 +13,13 @@ describe Proofer::Vendor::Mock do
       city: 'Anytown',
       state: 'KS',
       zipcode: '66666'
-    }   
+    }
   end
 
   describe '#new' do
     it 'initializes cleanly' do
       mocker = described_class.new applicant: applicant
+
       expect(mocker).to be_a Proofer::Vendor::Mock
       expect(mocker.applicant).to be_a Proofer::Applicant
     end
@@ -28,6 +29,7 @@ describe Proofer::Vendor::Mock do
     it 'begins proofing cycle' do
       mocker = described_class.new
       resolution = mocker.start applicant
+
       expect(resolution).to be_a Proofer::Resolution
       expect(resolution.success).to eq true
       expect(resolution.session_id).to_not be_nil
@@ -37,6 +39,7 @@ describe Proofer::Vendor::Mock do
     it 'optionally skips KBV' do
       mocker = described_class.new kbv: false
       resolution = mocker.start applicant
+
       expect(resolution).to be_a Proofer::Resolution
       expect(resolution.success).to eq true
       expect(resolution.session_id).to_not be_nil
@@ -45,7 +48,8 @@ describe Proofer::Vendor::Mock do
 
     it 'fails on Bad first name' do
       mocker = described_class.new
-      resolution = mocker.start({ first_name: 'Bad' })
+      resolution = mocker.start first_name: 'Bad'
+
       expect(resolution).to be_a Proofer::Resolution
       expect(resolution.success).to eq false
       expect(resolution.questions).to be_nil
@@ -53,7 +57,8 @@ describe Proofer::Vendor::Mock do
 
     it 'fails on 6666 SSN' do
       mocker = described_class.new
-      resolution = mocker.start({ ssn: '6666' })
+      resolution = mocker.start ssn: '6666'
+
       expect(resolution).to be_a Proofer::Resolution
       expect(resolution.success).to eq false
       expect(resolution.questions).to be_nil
@@ -68,6 +73,7 @@ describe Proofer::Vendor::Mock do
         question_set.find_by_key(ques).answer = answ
       end
       confirmation = mocker.submit_answers question_set
+
       expect(confirmation).to be_a Proofer::Confirmation
       expect(confirmation.success).to eq true
     end
@@ -80,6 +86,7 @@ describe Proofer::Vendor::Mock do
       end
       question_set.find_by_key('city').answer = 'GONDOR'
       confirmation = mocker.submit_answers question_set
+
       expect(confirmation).to be_a Proofer::Confirmation
       expect(confirmation.success).to eq false
     end
@@ -92,6 +99,7 @@ describe Proofer::Vendor::Mock do
       end
       question_set.find_by_key('city').answer = nil
       confirmation = mocker.submit_answers question_set
+
       expect(confirmation).to be_a Proofer::Confirmation
       expect(confirmation.success).to eq false
     end
@@ -99,17 +107,17 @@ describe Proofer::Vendor::Mock do
 
   describe '#submit_financials' do
     it 'succeeds with credit card' do
-       mocker = described_class.new applicant: applicant
-       resolution = mocker.start
-       confirmation = mocker.submit_financials({ccn: '12345678'}, resolution.session_id)
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_financials({ ccn: '12345678' }, resolution.session_id)
 
-       expect(confirmation.success).to eq true
+      expect(confirmation.success).to eq true
     end
 
     it 'fails with bad credit card' do
       mocker = described_class.new applicant: applicant
       resolution = mocker.start
-      confirmation = mocker.submit_financials({ccn: '00000000'}, resolution.session_id)
+      confirmation = mocker.submit_financials({ ccn: '00000000' }, resolution.session_id)
 
       expect(confirmation.success).to eq false
     end

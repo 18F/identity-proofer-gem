@@ -45,7 +45,7 @@ module Proofer
         uuid = SecureRandom.uuid
         if applicant.first_name =~ /Bad/i
           failed_resolution({ error: 'bad first name' }, uuid)
-        elsif applicant.ssn == '6666'
+        elsif applicant.ssn =~ /6666/
           failed_resolution({ error: 'bad SSN' }, uuid)
         else
           successful_resolution({ kbv: 'some questions here' }, uuid)

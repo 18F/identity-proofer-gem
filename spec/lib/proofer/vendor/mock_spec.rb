@@ -106,20 +106,22 @@ describe Proofer::Vendor::Mock do
   end
 
   describe '#submit_financials' do
-    it 'succeeds with credit card' do
-      mocker = described_class.new applicant: applicant
-      resolution = mocker.start
-      confirmation = mocker.submit_financials({ ccn: '12345678' }, resolution.session_id)
+    [:ccn, :mortgage, :home_equity_line, :auto_loan].each do |finance_type|
+      it "succeeds with #{finance_type}" do
+        mocker = described_class.new applicant: applicant
+        resolution = mocker.start
+        confirmation = mocker.submit_financials({ finance_type => '12345678' }, resolution.session_id)
 
-      expect(confirmation.success).to eq true
-    end
+        expect(confirmation.success).to eq true
+      end
 
-    it 'fails with bad credit card' do
-      mocker = described_class.new applicant: applicant
-      resolution = mocker.start
-      confirmation = mocker.submit_financials({ ccn: '00000000' }, resolution.session_id)
+      it "fails with bad #{finance_type}" do
+        mocker = described_class.new applicant: applicant
+        resolution = mocker.start
+        confirmation = mocker.submit_financials({ finance_type => '00000000' }, resolution.session_id)
 
-      expect(confirmation.success).to eq false
+        expect(confirmation.success).to eq false
+      end
     end
   end
 

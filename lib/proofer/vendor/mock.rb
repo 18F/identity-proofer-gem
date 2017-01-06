@@ -21,7 +21,7 @@ module Proofer
       end
 
       def submit_financials(financials, session_id = nil)
-        if financials.is_a?(Hash) && financials[:ccn] == '12345678'
+        if financials.is_a?(Hash) && financials.values.first == '12345678'
           successful_confirmation(session: session_id)
         else
           failed_confirmation(session: session_id)

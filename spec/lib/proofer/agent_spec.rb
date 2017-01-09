@@ -44,7 +44,7 @@ describe Proofer::Agent do
       financials_confirmation = agent.submit_financials ccn: '12345678'
       expect(financials_confirmation.success).to eq true
 
-      phone_confirmation = agent.submit_phone '(555) 555-5555'
+      phone_confirmation = agent.submit_phone '(555) 555-0000'
       expect(phone_confirmation.success).to eq true
     end
   end

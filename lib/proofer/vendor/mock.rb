@@ -21,19 +21,19 @@ module Proofer
       end
 
       def submit_financials(financials, session_id = nil)
-        if financials.is_a?(Hash) && financials.values.first == '12345678'
-          successful_confirmation(session: session_id)
-        else
+        if financials.is_a?(Hash) && financials.values.first == '00000000'
           failed_confirmation(session: session_id)
+        else
+          successful_confirmation(session: session_id)
         end
       end
 
       def submit_phone(phone_number, session_id = nil)
         plain_phone = phone_number.gsub(/\D/, '').gsub(/\A1/, '')
         if plain_phone == '5555555555'
-          successful_confirmation(session: session_id)
-        else
           failed_confirmation(session: session_id)
+        else
+          successful_confirmation(session: session_id)
         end
       end
 

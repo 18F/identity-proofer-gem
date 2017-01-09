@@ -129,7 +129,7 @@ describe Proofer::Vendor::Mock do
     it 'succeeds with all fives' do
       mocker = described_class.new applicant: applicant
       resolution = mocker.start
-      confirmation = mocker.submit_phone('(555) 555-5555', resolution.session_id)
+      confirmation = mocker.submit_phone('(555) 555-0000', resolution.session_id)
 
       expect(confirmation.success).to eq true
     end
@@ -137,7 +137,7 @@ describe Proofer::Vendor::Mock do
     it 'succeeds with +1 prefix' do
       mocker = described_class.new applicant: applicant
       resolution = mocker.start
-      confirmation = mocker.submit_phone('+1 (555) 555-5555', resolution.session_id)
+      confirmation = mocker.submit_phone('+1 (555) 555-0000', resolution.session_id)
 
       expect(confirmation.success).to eq true
     end
@@ -145,7 +145,7 @@ describe Proofer::Vendor::Mock do
     it 'fails without all fives' do
       mocker = described_class.new applicant: applicant
       resolution = mocker.start
-      confirmation = mocker.submit_phone('(555) 555-1234', resolution.session_id)
+      confirmation = mocker.submit_phone('(555) 555-5555', resolution.session_id)
 
       expect(confirmation.success).to eq false
     end

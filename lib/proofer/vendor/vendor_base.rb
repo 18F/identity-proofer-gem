@@ -55,11 +55,12 @@ module Proofer
         )
       end
 
-      def failed_resolution(vendor_resp, session_id)
+      def failed_resolution(vendor_resp, session_id, errors = {})
         Proofer::Resolution.new(
           success: false,
           vendor_resp: vendor_resp,
-          session_id: session_id
+          session_id: session_id,
+          errors: errors
         )
       end
 
@@ -72,8 +73,8 @@ module Proofer
         Proofer::Confirmation.new success: true, vendor_resp: vendor_resp
       end
 
-      def failed_confirmation(vendor_resp)
-        Proofer::Confirmation.new success: false, vendor_resp: vendor_resp
+      def failed_confirmation(vendor_resp, errors = {})
+        Proofer::Confirmation.new success: false, vendor_resp: vendor_resp, errors: errors
       end
     end
   end

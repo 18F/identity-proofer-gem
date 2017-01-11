@@ -53,6 +53,7 @@ describe Proofer::Vendor::Mock do
       expect(resolution).to be_a Proofer::Resolution
       expect(resolution.success).to eq false
       expect(resolution.questions).to be_nil
+      expect(resolution.errors).to eq(first_name: 'Unverified first name.')
     end
 
     it 'fails on 6666 SSN' do
@@ -62,6 +63,7 @@ describe Proofer::Vendor::Mock do
       expect(resolution).to be_a Proofer::Resolution
       expect(resolution.success).to eq false
       expect(resolution.questions).to be_nil
+      expect(resolution.errors).to eq(ssn: 'Unverified SSN.')
     end
   end
 
@@ -121,12 +123,13 @@ describe Proofer::Vendor::Mock do
         confirmation = mocker.submit_financials({ finance_type => '00000000' }, resolution.session_id)
 
         expect(confirmation.success).to eq false
+        expect(confirmation.errors).to eq(finance_type => "The #{finance_type} could not be verified.")
       end
     end
   end
 
   describe '#submit_phone' do
-    it 'succeeds with all fives' do
+    it 'succeeds with valid number' do
       mocker = described_class.new applicant: applicant
       resolution = mocker.start
       confirmation = mocker.submit_phone('(555) 555-0000', resolution.session_id)
@@ -142,12 +145,13 @@ describe Proofer::Vendor::Mock do
       expect(confirmation.success).to eq true
     end
 
-    it 'fails without all fives' do
+    it 'fails with all fives' do
       mocker = described_class.new applicant: applicant
       resolution = mocker.start
       confirmation = mocker.submit_phone('(555) 555-5555', resolution.session_id)
 
       expect(confirmation.success).to eq false
+      expect(confirmation.errors).to eq(phone: 'The phone number could not be verified.')
     end
   end
 end

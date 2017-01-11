@@ -22,7 +22,7 @@ module Proofer
 
       def submit_financials(financials, session_id = nil)
         if financials.is_a?(Hash) && financials.values.first == '00000000'
-          failed_confirmation(session: session_id)
+          failed_confirmation({ session: session_id }, financial_errors(financials))
         else
           successful_confirmation(session: session_id)
         end
@@ -31,7 +31,10 @@ module Proofer
       def submit_phone(phone_number, session_id = nil)
         plain_phone = phone_number.gsub(/\D/, '').gsub(/\A1/, '')
         if plain_phone == '5555555555'
-          failed_confirmation(session: session_id)
+          failed_confirmation(
+            { session: session_id },
+            phone: 'The phone number could not be verified.'
+          )
         else
           successful_confirmation(session: session_id)
         end
@@ -44,9 +47,9 @@ module Proofer
       def perform_resolution
         uuid = SecureRandom.uuid
         if applicant.first_name =~ /Bad/i
-          failed_resolution({ error: 'bad first name' }, uuid)
+          failed_resolution({ error: 'bad first name' }, uuid, first_name: 'Unverified first name.')
         elsif applicant.ssn =~ /6666/
-          failed_resolution({ error: 'bad SSN' }, uuid)
+          failed_resolution({ error: 'bad SSN' }, uuid, ssn: 'Unverified SSN.')
         else
           successful_resolution({ kbv: 'some questions here' }, uuid)
         end
@@ -108,6 +111,14 @@ module Proofer
       # rubocop:enable all
 
       private
+
+      def financial_errors(financials)
+        errors = {}
+        financials.keys.each do |key|
+          errors[key] = "The #{key} could not be verified."
+        end
+        errors
+      end
 
       def build_answer_report(question_set, session_id)
         report = { session: session_id }

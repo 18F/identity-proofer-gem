@@ -2,12 +2,13 @@ require 'proofer/question_set'
 
 module Proofer
   class Resolution
-    attr_accessor :success, :questions, :vendor_resp, :session_id
+    attr_accessor :success, :questions, :vendor_resp, :session_id, :errors
 
     def initialize(opts)
       self.success = opts[:success]
       self.vendor_resp = opts[:vendor_resp]
       self.session_id = opts[:session_id]
+      self.errors = opts[:errors]
       questions = opts[:questions]
       if questions && questions.is_a?(Proofer::QuestionSet)
         self.questions = questions

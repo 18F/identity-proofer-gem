@@ -113,11 +113,9 @@ module Proofer
       private
 
       def financial_errors(financials)
-        errors = {}
-        financials.keys.each do |key|
+        financials.keys.each_with_object({}) do |key, errors|
           errors[key] = "The #{key} could not be verified."
         end
-        errors
       end
 
       def build_answer_report(question_set, session_id)

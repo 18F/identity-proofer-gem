@@ -1,4 +1,5 @@
 require 'proofer/vendor/vendor_base'
+require 'proofer/vendor/mock_response'
 
 module Proofer
   module Vendor
@@ -14,17 +15,17 @@ module Proofer
       def submit_answers(question_set, session_id = nil)
         report = build_answer_report(question_set, session_id)
         if report.values.include?(false)
-          failed_confirmation(report: report)
+          failed_confirmation(MockResponse.new(report: report))
         else
-          successful_confirmation(report: report)
+          successful_confirmation(MockResponse.new(report: report))
         end
       end
 
       def submit_financials(financials, session_id = nil)
         if financials.is_a?(Hash) && financials.values.first == '00000000'
-          failed_confirmation({ session: session_id }, financial_errors(financials))
+          failed_confirmation(MockResponse.new(session: session_id), financial_errors(financials))
         else
-          successful_confirmation(session: session_id)
+          successful_confirmation(MockResponse.new(session: session_id))
         end
       end
 
@@ -32,7 +33,7 @@ module Proofer
         plain_phone = phone_number.gsub(/\D/, '').gsub(/\A1/, '')
         if plain_phone == '5555555555'
           failed_confirmation(
-            { session: session_id },
+            MockResponse.new(session: session_id),
             phone: 'The phone number could not be verified.'
           )
         else
@@ -47,11 +48,11 @@ module Proofer
       def perform_resolution
         uuid = SecureRandom.uuid
         if applicant.first_name =~ /Bad/i
-          failed_resolution({ error: 'bad first name' }, uuid, first_name: 'Unverified first name.')
+          fail_resolution_with_bad_name(uuid)
         elsif applicant.ssn =~ /6666/
-          failed_resolution({ error: 'bad SSN' }, uuid, ssn: 'Unverified SSN.')
+          fail_resolution_with_bad_ssn(uuid)
         else
-          successful_resolution({ kbv: 'some questions here' }, uuid)
+          pass_resolution(uuid)
         end
       end
 
@@ -111,6 +112,29 @@ module Proofer
       # rubocop:enable all
 
       private
+
+      def fail_resolution_with_bad_name(uuid)
+        failed_resolution(
+          MockResponse.new(error: 'bad first name', reasons: ['The name was suspicious']),
+          uuid,
+          first_name: 'Unverified first name.'
+        )
+      end
+
+      def fail_resolution_with_bad_ssn(uuid)
+        failed_resolution(
+          MockResponse.new(error: 'bad SSN', reasons: ['The SSN was suspicious']),
+          uuid,
+          ssn: 'Unverified SSN.'
+        )
+      end
+
+      def pass_resolution(uuid)
+        successful_resolution(
+          MockResponse.new(reasons: ['Everything looks good'], kbv: 'some questions here'),
+          uuid
+        )
+      end
 
       def financial_errors(financials)
         financials.keys.each_with_object({}) do |key, errors|

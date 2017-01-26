@@ -23,21 +23,25 @@ module Proofer
 
       def submit_financials(financials, session_id = nil)
         if financials.is_a?(Hash) && financials.values.first == '00000000'
-          failed_confirmation(MockResponse.new(session: session_id), financial_errors(financials))
+          failed_confirmation(
+            MockResponse.new(session: session_id, reasons: ['Bad number']),
+            financial_errors(financials)
+          )
         else
-          successful_confirmation(MockResponse.new(session: session_id))
+          successful_confirmation(
+            MockResponse.new(session: session_id, reasons: ['Good number'])
+          )
         end
       end
 
       def submit_phone(phone_number, session_id = nil)
         plain_phone = phone_number.gsub(/\D/, '').gsub(/\A1/, '')
         if plain_phone == '5555555555'
-          failed_confirmation(
-            MockResponse.new(session: session_id),
-            phone: 'The phone number could not be verified.'
-          )
+          fail_confirmation_with_bad_phone(session_id)
         else
-          successful_confirmation(session: session_id)
+          successful_confirmation(
+            MockResponse.new(session: session_id, reasons: ['Good number'])
+          )
         end
       end
 
@@ -112,6 +116,13 @@ module Proofer
       # rubocop:enable all
 
       private
+
+      def fail_confirmation_with_bad_phone(session_id)
+        failed_confirmation(
+          MockResponse.new(session: session_id, reasons: ['Bad number']),
+          phone: 'The phone number could not be verified.'
+        )
+      end
 
       def fail_resolution_with_bad_name(uuid)
         failed_resolution(

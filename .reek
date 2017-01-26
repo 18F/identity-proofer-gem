@@ -12,6 +12,9 @@ FeatureEnvy:
   exclude:
     - Proofer::Vendor::VendorBase
     - Proofer::Question#choices_as_hash
+ManualDispatch:
+  exclude:
+    - Proofer::Applicant#initialize
 NilCheck:
   exclude:
     - Proofer::Vendor::VendorBase

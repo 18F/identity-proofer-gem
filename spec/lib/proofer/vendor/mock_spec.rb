@@ -34,6 +34,7 @@ describe Proofer::Vendor::Mock do
       expect(resolution.success).to eq true
       expect(resolution.session_id).to_not be_nil
       expect(resolution.questions).to be_a Proofer::QuestionSet
+      expect(resolution.vendor_resp.reasons).to include 'Everything looks good'
     end
 
     it 'optionally skips KBV' do
@@ -54,6 +55,7 @@ describe Proofer::Vendor::Mock do
       expect(resolution.success).to eq false
       expect(resolution.questions).to be_nil
       expect(resolution.errors).to eq(first_name: 'Unverified first name.')
+      expect(resolution.vendor_resp.reasons).to include 'The name was suspicious'
     end
 
     it 'fails on 6666 SSN' do
@@ -64,6 +66,7 @@ describe Proofer::Vendor::Mock do
       expect(resolution.success).to eq false
       expect(resolution.questions).to be_nil
       expect(resolution.errors).to eq(ssn: 'Unverified SSN.')
+      expect(resolution.vendor_resp.reasons).to include 'The SSN was suspicious'
     end
   end
 

@@ -32,6 +32,7 @@ describe Proofer::Vendor::Mock do
 
       expect(resolution).to be_a Proofer::Resolution
       expect(resolution.success).to eq true
+      expect(resolution.errors).to eq({})
       expect(resolution.session_id).to_not be_nil
       expect(resolution.questions).to be_a Proofer::QuestionSet
       expect(resolution.vendor_resp.reasons).to include 'Everything looks good'
@@ -43,6 +44,7 @@ describe Proofer::Vendor::Mock do
 
       expect(resolution).to be_a Proofer::Resolution
       expect(resolution.success).to eq true
+      expect(resolution.errors).to eq({})
       expect(resolution.session_id).to_not be_nil
       expect(resolution.questions).to be_nil
     end
@@ -81,6 +83,7 @@ describe Proofer::Vendor::Mock do
 
       expect(confirmation).to be_a Proofer::Confirmation
       expect(confirmation.success).to eq true
+      expect(confirmation.errors).to eq({})
     end
 
     it 'sets confirmation false if wrong answer given' do
@@ -94,6 +97,7 @@ describe Proofer::Vendor::Mock do
 
       expect(confirmation).to be_a Proofer::Confirmation
       expect(confirmation.success).to eq false
+      expect(confirmation.errors).to eq({})
     end
 
     it 'sets confirmation false if missing answer' do
@@ -107,6 +111,7 @@ describe Proofer::Vendor::Mock do
 
       expect(confirmation).to be_a Proofer::Confirmation
       expect(confirmation.success).to eq false
+      expect(confirmation.errors).to eq({})
     end
   end
 
@@ -118,6 +123,7 @@ describe Proofer::Vendor::Mock do
         confirmation = mocker.submit_financials({ finance_type => '12345678' }, resolution.session_id)
 
         expect(confirmation.success).to eq true
+        expect(confirmation.errors).to eq({})
       end
 
       it "fails with bad #{finance_type}" do
@@ -146,6 +152,7 @@ describe Proofer::Vendor::Mock do
       confirmation = mocker.submit_phone('+1 (555) 555-0000', resolution.session_id)
 
       expect(confirmation.success).to eq true
+      expect(confirmation.errors).to eq({})
     end
 
     it 'fails with all fives' do

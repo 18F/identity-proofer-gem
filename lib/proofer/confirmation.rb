@@ -5,7 +5,7 @@ module Proofer
     def initialize(opts)
       self.success = opts[:success]
       self.vendor_resp = opts[:vendor_resp]
-      self.errors = opts[:errors]
+      self.errors = opts[:errors] || {}
     end
 
     def success?

@@ -55,6 +55,8 @@ module Proofer
           fail_resolution_with_bad_name(uuid)
         elsif applicant.ssn =~ /6666/
           fail_resolution_with_bad_ssn(uuid)
+        elsif applicant.zipcode == '00000'
+          fail_resolution_with_bad_zipcode(uuid)
         else
           pass_resolution(uuid)
         end
@@ -137,6 +139,14 @@ module Proofer
           MockResponse.new(error: 'bad SSN', reasons: ['The SSN was suspicious']),
           uuid,
           ssn: 'Unverified SSN.'
+        )
+      end
+
+      def fail_resolution_with_bad_zipcode(uuid)
+        failed_resolution(
+          MockResponse.new(error: 'bad address', reasons: ['The ZIP code was suspicious']),
+          uuid,
+          zipcode: 'Unverified ZIP code.'
         )
       end
 

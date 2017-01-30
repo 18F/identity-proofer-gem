@@ -8,7 +8,7 @@ module Proofer
       self.success = opts[:success]
       self.vendor_resp = opts[:vendor_resp]
       self.session_id = opts[:session_id]
-      self.errors = opts[:errors]
+      self.errors = opts[:errors] || {}
       questions = opts[:questions]
       if questions && questions.is_a?(Proofer::QuestionSet)
         self.questions = questions

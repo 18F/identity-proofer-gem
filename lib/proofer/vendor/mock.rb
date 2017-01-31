@@ -55,7 +55,7 @@ module Proofer
           fail_resolution_with_bad_name(uuid)
         elsif applicant.ssn =~ /6666/
           fail_resolution_with_bad_ssn(uuid)
-        elsif applicant.zipcode == '00000'
+        elsif looks_like_bad_zipcode(applicant)
           fail_resolution_with_bad_zipcode(uuid)
         else
           pass_resolution(uuid)
@@ -118,6 +118,10 @@ module Proofer
       # rubocop:enable all
 
       private
+
+      def looks_like_bad_zipcode(applicant)
+        applicant.zipcode == '00000' || applicant.prev_zipcode == '00000'
+      end
 
       def fail_confirmation_with_bad_phone(session_id)
         failed_confirmation(

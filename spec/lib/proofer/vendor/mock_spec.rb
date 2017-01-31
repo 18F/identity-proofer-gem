@@ -72,14 +72,16 @@ describe Proofer::Vendor::Mock do
     end
 
     it 'fails on 00000 zipcode' do
-      mocker = described_class.new
-      resolution = mocker.start zipcode: '00000'
+      [:zipcode, :prev_zipcode].each do |zipcode|
+        mocker = described_class.new
+        resolution = mocker.start zipcode => '00000'
 
-      expect(resolution).to be_a Proofer::Resolution
-      expect(resolution.success).to eq false
-      expect(resolution.questions).to be_nil
-      expect(resolution.errors).to eq(zipcode: 'Unverified ZIP code.')
-      expect(resolution.vendor_resp.reasons).to include 'The ZIP code was suspicious'
+        expect(resolution).to be_a Proofer::Resolution
+        expect(resolution.success).to eq false
+        expect(resolution.questions).to be_nil
+        expect(resolution.errors).to eq(zipcode: 'Unverified ZIP code.')
+        expect(resolution.vendor_resp.reasons).to include 'The ZIP code was suspicious'
+      end
     end
   end
 

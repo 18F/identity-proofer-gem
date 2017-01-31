@@ -70,6 +70,17 @@ describe Proofer::Vendor::Mock do
       expect(resolution.errors).to eq(ssn: 'Unverified SSN.')
       expect(resolution.vendor_resp.reasons).to include 'The SSN was suspicious'
     end
+
+    it 'fails on 00000 zipcode' do
+      mocker = described_class.new
+      resolution = mocker.start zipcode: '00000'
+
+      expect(resolution).to be_a Proofer::Resolution
+      expect(resolution.success).to eq false
+      expect(resolution.questions).to be_nil
+      expect(resolution.errors).to eq(zipcode: 'Unverified ZIP code.')
+      expect(resolution.vendor_resp.reasons).to include 'The ZIP code was suspicious'
+    end
   end
 
   describe '#submit_answers' do

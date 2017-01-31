@@ -26,6 +26,7 @@ Metrics/ClassLength:
   CountComments: false
   Max: 150
   Exclude:
+  - lib/proofer/vendor/mock.rb
   - spec/**/*
 
 Metrics/LineLength:

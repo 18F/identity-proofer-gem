@@ -1,5 +1,6 @@
 module Proofer
   class Applicant
+    attr_accessor :uuid
     attr_accessor :first_name, :last_name, :middle_name, :gen
     attr_accessor :address1, :address2, :city, :state, :zipcode
     attr_accessor :prev_address1, :prev_address2, :prev_city, :prev_state, :prev_zipcode

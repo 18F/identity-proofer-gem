@@ -1,5 +1,6 @@
 module Proofer
   class Applicant
+    # these attribute definition are grouped by "category"
     attr_accessor :uuid
     attr_accessor :first_name, :last_name, :middle_name, :gen
     attr_accessor :address1, :address2, :city, :state, :zipcode

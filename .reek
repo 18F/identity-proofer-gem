@@ -23,3 +23,5 @@ ControlParameter:
     - Proofer::Vendor::Mock#submit_phone
 TooManyStatements:
   max_statements: 8
+TooManyMethods:
+  max_methods: 20

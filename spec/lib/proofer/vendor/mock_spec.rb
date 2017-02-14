@@ -10,7 +10,7 @@ describe Proofer::Vendor::Mock do
       dob: '19700501',
       ssn: '666123456',
       address1: '1234 Main St',
-      city: 'Anytown',
+      city: 'St. Somewhere',
       state: 'KS',
       zipcode: '66666'
     }
@@ -47,6 +47,19 @@ describe Proofer::Vendor::Mock do
       expect(resolution.errors).to eq({})
       expect(resolution.session_id).to_not be_nil
       expect(resolution.questions).to be_nil
+    end
+
+    it 'returns normalized Applicant values' do
+      mocker = described_class.new kbv: false
+      resolution = mocker.start applicant
+
+      norm_applicant = resolution.vendor_resp.normalized_applicant
+      expect(norm_applicant).to be_a Proofer::Applicant
+      expect(norm_applicant.city).to eq 'SAINT SOMEWHERE'
+      expect(norm_applicant.zipcode).to eq '66666-1234'
+      expect(norm_applicant.address1).to eq '1234 MAIN STREET'
+      expect(norm_applicant.first_name).to eq 'SOME'
+      expect(norm_applicant.last_name).to eq 'ONE'
     end
 
     it 'fails on Bad first name' do

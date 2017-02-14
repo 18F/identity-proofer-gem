@@ -132,7 +132,10 @@ module Proofer
 
       def fail_resolution_with_bad_name(uuid)
         failed_resolution(
-          MockResponse.new(error: 'bad first name', reasons: ['The name was suspicious']),
+          MockResponse.new(
+            error: 'bad first name', reasons: ['The name was suspicious'],
+            normalized_applicant: normalized_applicant
+          ),
           uuid,
           first_name: 'Unverified first name.'
         )
@@ -140,7 +143,10 @@ module Proofer
 
       def fail_resolution_with_bad_ssn(uuid)
         failed_resolution(
-          MockResponse.new(error: 'bad SSN', reasons: ['The SSN was suspicious']),
+          MockResponse.new(
+            error: 'bad SSN', reasons: ['The SSN was suspicious'],
+            normalized_applicant: normalized_applicant
+          ),
           uuid,
           ssn: 'Unverified SSN.'
         )
@@ -148,7 +154,10 @@ module Proofer
 
       def fail_resolution_with_bad_zipcode(uuid)
         failed_resolution(
-          MockResponse.new(error: 'bad address', reasons: ['The ZIP code was suspicious']),
+          MockResponse.new(
+            normalized_applicant: normalized_applicant,
+            error: 'bad address', reasons: ['The ZIP code was suspicious']
+          ),
           uuid,
           zipcode: 'Unverified ZIP code.'
         )
@@ -156,9 +165,30 @@ module Proofer
 
       def pass_resolution(uuid)
         successful_resolution(
-          MockResponse.new(reasons: ['Everything looks good'], kbv: 'some questions here'),
-          uuid
+          MockResponse.new(
+            normalized_applicant: normalized_applicant,
+            reasons: ['Everything looks good'],
+            kbv: 'some questions here'
+          ), uuid
         )
+      end
+
+      # rubocop:disable Metrics/AbcSize
+      def normalized_applicant
+        Proofer::Applicant.new(
+          first_name: normalize(applicant.first_name),
+          last_name: normalize(applicant.last_name),
+          address1: normalize(applicant.address1).sub(/ST$/, 'STREET'),
+          address2: normalize(applicant.address2),
+          city: normalize(applicant.city).sub('ST.', 'SAINT'),
+          state: normalize(applicant.state),
+          zipcode: normalize(applicant.zipcode).sub(/^(\d\d\d\d\d)$/, '\1-1234')
+        )
+      end
+      # rubocop:enable Metrics/AbcSize
+
+      def normalize(str)
+        str ? str.upcase : ''
       end
 
       def financial_errors(financials)

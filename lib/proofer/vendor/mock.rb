@@ -1,5 +1,6 @@
 require 'proofer/vendor/vendor_base'
 require 'proofer/vendor/mock_response'
+require 'securerandom'
 
 module Proofer
   module Vendor
@@ -49,9 +50,13 @@ module Proofer
         Proofer::Applicant.new applicant
       end
 
+      # rubocop:disable MethodLength, AbcSize
       def perform_resolution
         uuid = SecureRandom.uuid
-        if applicant.first_name =~ /Bad/i
+        first_name = applicant.first_name
+        if first_name =~ /Fail/i
+          fail_resolution_with_exception(uuid)
+        elsif first_name =~ /Bad/i
           fail_resolution_with_bad_name(uuid)
         elsif applicant.ssn =~ /6666/
           fail_resolution_with_bad_ssn(uuid)
@@ -61,6 +66,7 @@ module Proofer
           pass_resolution(uuid)
         end
       end
+      # rubocop:enable MethodLength, AbcSize
 
       # rubocop:disable all
       def build_question_set(_vendor_resp)
@@ -128,6 +134,10 @@ module Proofer
           MockResponse.new(session: session_id, reasons: ['Bad number']),
           phone: 'The phone number could not be verified.'
         )
+      end
+
+      def fail_resolution_with_exception(_uuid)
+        raise 'Failed to contact proofing vendor'
       end
 
       def fail_resolution_with_bad_name(uuid)

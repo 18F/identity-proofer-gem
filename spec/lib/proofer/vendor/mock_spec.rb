@@ -96,6 +96,11 @@ describe Proofer::Vendor::Mock do
         expect(resolution.vendor_resp.reasons).to include 'The ZIP code was suspicious'
       end
     end
+
+    it 'raises exception on Fail first name' do
+      mocker = described_class.new
+      expect { mocker.start first_name: 'Fail' }.to raise_exception RuntimeError
+    end
   end
 
   describe '#submit_answers' do

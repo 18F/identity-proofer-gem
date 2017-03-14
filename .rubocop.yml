@@ -12,6 +12,13 @@ AllCops:
     - 'Rakefile'
     - 'proofer.gemspec'
 
+Metrics/BlockLength:
+  CountComments: false # count full line comments?
+  Enabled: true
+  Max: 25
+  Exclude:
+    - 'spec/**/*.rb'
+
 Metrics/AbcSize:
   Description: A calculated magnitude based on number of assignments, branches, and
     conditions.

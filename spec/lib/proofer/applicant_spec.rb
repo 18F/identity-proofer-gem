@@ -13,4 +13,12 @@ describe Proofer::Applicant do
       end.to raise_error ArgumentError
     end
   end
+
+  describe '#to_hash' do
+    it 'returns a Hash' do
+      applicant = described_class.new first_name: 'Sue', last_name: 'Me'
+
+      expect(applicant.to_hash).to eq('first_name' => 'Sue', 'last_name' => 'Me')
+    end
+  end
 end

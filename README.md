@@ -1,9 +1,53 @@
 # Identity Proofer Ruby Gem
 
-See example code in `spec/`.
-
 [![Build Status](https://travis-ci.org/18F/identity-proofer-gem.svg?branch=master)](https://travis-ci.org/18F/identity-proofer-gem)
 [![security](https://hakiri.io/github/18F/identity-proofer-gem/master.svg)](https://hakiri.io/github/18F/identity-proofer-gem/master)
+
+## Example proofing session
+
+```ruby
+applicant = {
+  first_name: 'Some',
+  last_name: 'One',
+  dob: '19700501',
+  ssn: '666123456',
+  address1: '1234 Main St',
+  city: 'St. Somewhere',
+  state: 'KS',
+  zipcode: '66666'
+}
+
+
+# Initialize a proofer
+agent = Proofer::Agent.new(
+  applicant: applicant,
+  vendor: :mock,
+  kbv: false
+)
+
+# Start a proofing session
+resolution = agent.start(applicant)
+resolution.success? # => true
+resolution.session_id # => 123abc
+resolution.errors # A hash of errors if errors occur
+
+# Submit Financials
+# Works with :ccn, :mortgage, :home_equity_line, :auto_loan
+confirmation = agent.submit_financials(
+  { ccn: '12345678' },
+  resolution.session_id
+)
+confirmation.success? # => true
+confirmation.errors # A hash of errors if errors occur
+
+# Submit Phone
+confirmation = agent.submit_phone(
+  '2065555000',
+  resolution.session_id
+)
+confirmation.success? # => true
+confirmation.errors # A hash of errors if errors occur
+```
 
 ## Public domain
 

@@ -40,6 +40,15 @@ confirmation = agent.submit_financials(
 confirmation.success? # => true
 confirmation.errors # A hash of errors if errors occur
 
+# Submit financials w/ a bank account
+confirmation = agent.submit_financials(
+  bank_account: '123456789',
+  bank_account_type: :savings,
+  bank_routing: '987654321',
+)
+confirmation.success? # => true
+confirmation.errors # A hash of errors if errors occur
+
 # Submit Phone
 confirmation = agent.submit_phone(
   '2065555000',

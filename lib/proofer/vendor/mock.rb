@@ -23,7 +23,7 @@ module Proofer
       end
 
       def submit_financials(financials, session_id = nil)
-        if financials.is_a?(Hash) && financials.values.first == '00000000'
+        if financials.is_a?(Hash) && !financial_errors(financials).empty?
           failed_confirmation(
             MockResponse.new(session: session_id, reasons: ['Bad number']),
             financial_errors(financials)
@@ -82,7 +82,7 @@ module Proofer
               Proofer::QuestionChoice.new(key: 'Gondor', display: 'Gondor'),
               Proofer::QuestionChoice.new(key: 'Hogsmeade', display: 'Hogsmeade'),
               Proofer::QuestionChoice.new(key: 'None of the Above', display: 'None of the Above <-- PASS')
-            ]   
+            ]
         ),
           Proofer::Question.new(
             key: 'bear',
@@ -202,9 +202,23 @@ module Proofer
       end
 
       def financial_errors(financials)
-        financials.keys.each_with_object({}) do |key, errors|
-          errors[key] = "The #{key} could not be verified."
+        errors = financials.each_with_object({}) do |pair, error_hash|
+          key, value = pair
+          if value == '00000000'
+            error_hash[key] = "The #{key} could not be verified."
+          end
         end
+        unless bank_account_type_valid?(financials)
+          errors[:bank_account_type] = 'The bank_account_type could not be verified.'
+        end
+        errors
+      end
+
+      def bank_account_type_valid?(financials)
+        return true if financials[:bank_account].nil?
+        return false if financials[:bank_account_type].nil?
+        return false unless %w[checking savings].include?(financials[:bank_account_type].to_s)
+        true
       end
 
       def build_answer_report(question_set, session_id)

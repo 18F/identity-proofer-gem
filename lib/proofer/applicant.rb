@@ -7,7 +7,10 @@ module Proofer
     attr_accessor :prev_address1, :prev_address2, :prev_city, :prev_state, :prev_zipcode
     attr_accessor :ssn, :dob, :phone, :email
     attr_accessor :drivers_license_state, :drivers_license_id, :passport_id, :military_id
-    attr_accessor :ccn, :mortgage, :home_equity_line, :auto_loan, :bank_acct, :bank_routing
+    attr_accessor :ccn, :mortgage, :home_equity_line, :auto_loan
+    attr_accessor :bank_account, :bank_account_type, :bank_routing
+
+    alias bank_acct bank_account
 
     def initialize(params)
       params.each do |attr, value|

@@ -166,6 +166,69 @@ describe Proofer::Vendor::Mock do
         expect(confirmation.errors).to eq(finance_type => "The #{finance_type} could not be verified.")
       end
     end
+
+    it 'succeeeds with bank_account' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_financials(
+        {
+          bank_account: '1234567',
+          bank_routing: '1234567',
+          bank_account_type: :checking
+        },
+        resolution.session_id
+      )
+
+      expect(confirmation.success).to eq true
+      expect(confirmation.errors).to eq({})
+    end
+
+    it 'fails with bad bank_account' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_financials(
+        {
+          bank_account: '00000000',
+          bank_routing: '1234567',
+          bank_account_type: :checking
+        },
+        resolution.session_id
+      )
+
+      expect(confirmation.success).to eq false
+      expect(confirmation.errors).to eq(bank_account: 'The bank_account could not be verified.')
+    end
+
+    it 'fails with bad bank_account_type' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_financials(
+        {
+          bank_account: '1234567',
+          bank_routing: '1234567',
+          bank_account_type: :qwerty
+        },
+        resolution.session_id
+      )
+
+      expect(confirmation.success).to eq false
+      expect(confirmation.errors).to eq(bank_account_type: 'The bank_account_type could not be verified.')
+    end
+
+    it 'fails if bank_account_type is missing' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_financials(
+        {
+          bank_account: '1234567',
+          bank_routing: '1234567'
+        },
+        resolution.session_id
+      )
+
+      expect(confirmation.success).to eq false
+      expect(confirmation.errors).to eq(bank_account_type: 'The bank_account_type could not be verified.')
+    end
   end
 
   describe '#submit_phone' do

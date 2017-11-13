@@ -13,6 +13,10 @@ module Proofer
         'bear'  => 'schools'
       }.freeze
 
+      SUPPORTED_STATES = %w(
+        AR AZ CA DC DE FL IA ID IL IN KY MD ME MI MS NA ND NE NM PA SD TX VA WA WI
+      ).freeze
+
       def submit_answers(question_set, session_id = nil)
         report = build_answer_report(question_set, session_id)
         if report.values.include?(false)
@@ -45,6 +49,26 @@ module Proofer
           )
         end
       end
+
+      # rubocop:disable MethodLength
+      def submit_state_id(state_id_data, session_id = nil)
+        if !SUPPORTED_STATES.include? state_id_data[:state_id_jurisdiction]
+          failed_confirmation(
+            MockResponse.new(session: session_id, reasons: ['invalid jurisdiction']),
+            state_id_jurisdiction: 'The jurisdiction could not be verified'
+          )
+        elsif state_id_data[:state_id_number] =~ /\A0*\z/
+          failed_confirmation(
+            MockResponse.new(session: session_id, reasons: ['invalid state id number']),
+            state_id_number: 'The state ID number could not be verified'
+          )
+        else
+          successful_confirmation(
+            MockResponse.new(session: session_id, reasons: ['valid state ID'])
+          )
+        end
+      end
+      # rubocop:enable MethodLength
 
       def coerce_vendor_applicant(applicant)
         Proofer::Applicant.new applicant
@@ -217,7 +241,7 @@ module Proofer
       def bank_account_type_valid?(financials)
         return true if financials[:bank_account].nil?
         return false if financials[:bank_account_type].nil?
-        return false unless %w[checking savings].include?(financials[:bank_account_type].to_s)
+        return false unless %w(checking savings).include?(financials[:bank_account_type].to_s)
         true
       end
 

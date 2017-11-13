@@ -258,4 +258,51 @@ describe Proofer::Vendor::Mock do
       expect(confirmation.errors).to eq(phone: 'The phone number could not be verified.')
     end
   end
+
+  describe '#submit_state_id' do
+    it 'succeeds with valid state id' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_state_id(
+        {
+          state_id_number: '123456789',
+          state_id_jurisdiction: 'WA'
+        },
+        resolution.session_id
+      )
+
+      expect(confirmation.success).to eq true
+      expect(confirmation.errors).to eq({})
+    end
+
+    it 'fails with unsupported juridisction' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_state_id(
+        {
+          state_id_number: '123456789',
+          state_id_jurisdiction: 'AL'
+        },
+        resolution.session_id
+      )
+
+      expect(confirmation.success).to eq false
+      expect(confirmation.errors).to eq(state_id_jurisdiction: 'The jurisdiction could not be verified')
+    end
+
+    it 'fails with invalid state id' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_state_id(
+        {
+          state_id_number: '000000000',
+          state_id_jurisdiction: 'WA'
+        },
+        resolution.session_id
+      )
+
+      expect(confirmation.success).to eq false
+      expect(confirmation.errors).to eq(state_id_number: 'The state ID number could not be verified')
+    end
+  end
 end

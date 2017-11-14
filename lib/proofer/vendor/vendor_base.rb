@@ -32,6 +32,10 @@ module Proofer
         raise NotImplementedError, "#{self} must implement submit_phone() method"
       end
 
+      def submit_state_id(_state_id_data, _session_id)
+        raise NotImplementedError, "#{self} must implement submit_state_id() method"
+      end
+
       def coerce_applicant(applicant)
         return if applicant.nil?
         return applicant if applicant.is_a?(Proofer::Applicant)

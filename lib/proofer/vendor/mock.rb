@@ -50,7 +50,7 @@ module Proofer
         end
       end
 
-      # rubocop:disable MethodLength
+=begin     # rubocop:disable MethodLength
       def submit_state_id(state_id_data, session_id = nil)
         if !SUPPORTED_STATES.include? state_id_data[:state_id_jurisdiction]
           failed_confirmation(
@@ -67,8 +67,51 @@ module Proofer
             MockResponse.new(session: session_id, reasons: ['valid state ID'])
           )
         end
-      end
+      end 
       # rubocop:enable MethodLength
+=end
+
+      def submit_state_id(state_id_data, session_id = nil)
+        if invalid_state_submission?(state_id_data)
+          return unsuccessful_state_confirmation 
+        elsif invalid_state_id_number?(state_id_data)
+          return unsuccessful_state_id_confirmation
+        else
+          successful_state_confirmation
+        end
+      end
+      
+      def invalid_state_submission?(state_id_data)
+        state_not_supported?(state_id_data) || invalid_state_id_number?(state_id_data)
+      end
+      
+      def state_not_supported?(state_id_data)
+       !SUPPORTED_STATES.include? state_id_data[:state_id_jurisdiction]
+      end
+      
+      def unsuccessful_state_confirmation(state_id_data, session_id = nil)
+        failed_confirmation(
+          MockResponse.new(session: session_id, reasons: ['invalid jurisdiction']),
+          state_id_jurisdiction: 'The jurisdiction could not be verified'
+        )
+      end
+
+      def successful_state_confirmation(state_id_data, session_id = nil)
+        successful_confirmation(
+          MockResponse.new(session: session_id, reasons: ['valid state ID'])
+        )
+      end
+
+      def invalid_state_id_number?(state_id_data)
+        state_id_data[:state_id_number] =~ /\A0*\z/
+      end
+
+      def unsuccessful_state_id_confirmation(state_id_data, session_id = nil)
+        failed_confirmation(
+          MockResponse.new(session: session_id, reasons: ['invalid state id number']),
+          state_id_number: 'The state ID number could not be verified'
+        )
+      end
 
       def coerce_vendor_applicant(applicant)
         Proofer::Applicant.new applicant

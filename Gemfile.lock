@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    proofer (1.0.0)
+    proofer (1.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -34,4 +34,4 @@ DEPENDENCIES
   rspec
 
 BUNDLED WITH
-   1.15.3
+   1.15.4

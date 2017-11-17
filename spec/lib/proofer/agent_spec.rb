@@ -49,6 +49,7 @@ describe Proofer::Agent do
 
       state_confirmation = agent.submit_state_id(
         state_id_number: '123456789',
+        state_id_type: 'drivers_license',
         state_id_jurisdiction: 'WA'
       )
       expect(state_confirmation.success).to eq true

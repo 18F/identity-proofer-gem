@@ -266,6 +266,7 @@ describe Proofer::Vendor::Mock do
       confirmation = mocker.submit_state_id(
         {
           state_id_number: '123456789',
+          state_id_type: 'drivers_license',
           state_id_jurisdiction: 'WA'
         },
         resolution.session_id
@@ -281,6 +282,7 @@ describe Proofer::Vendor::Mock do
       confirmation = mocker.submit_state_id(
         {
           state_id_number: '123456789',
+          state_id_type: 'drivers_license',
           state_id_jurisdiction: 'AL'
         },
         resolution.session_id
@@ -296,13 +298,43 @@ describe Proofer::Vendor::Mock do
       confirmation = mocker.submit_state_id(
         {
           state_id_number: '000000000',
-          state_id_jurisdiction: 'WA'
+          state_id_jurisdiction: 'WA',
+          state_id_type: 'drivers_license'
         },
         resolution.session_id
       )
 
       expect(confirmation.success).to eq false
       expect(confirmation.errors).to eq(state_id_number: 'The state ID number could not be verified')
+    end
+
+    it 'fails with invalid state id type' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_state_id(
+        {
+          state_id_number: '123456789',
+          state_id_jurisdiction: 'WA',
+          state_id_type: 'drivers_permit'
+        },
+        resolution.session_id
+      )
+      expect(confirmation.success).to eq false
+      expect(confirmation.errors).to eq(state_id_type: 'The state ID type could not be verified')
+    end
+
+    it 'fails with nil state id type' do
+      mocker = described_class.new applicant: applicant
+      resolution = mocker.start
+      confirmation = mocker.submit_state_id(
+        {
+          state_id_number: '123456789',
+          state_id_jurisdiction: 'WA'
+        },
+        resolution.session_id
+      )
+      expect(confirmation.success).to eq false
+      expect(confirmation.errors).to eq(state_id_type: 'The state ID type could not be verified')
     end
   end
 end

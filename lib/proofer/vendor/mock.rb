@@ -17,6 +17,10 @@ module Proofer
         AR AZ CA DC DE FL IA ID IL IN KY MD ME MI MS NA ND NE NM PA SD TX VA WA WI
       ).freeze
 
+      SUPPORTED_STATE_ID_TYPES = %w(
+        drivers_license state_id_card
+      ).freeze
+
       def submit_answers(question_set, session_id = nil)
         report = build_answer_report(question_set, session_id)
         if report.values.include?(false)
@@ -50,53 +54,30 @@ module Proofer
         end
       end
 
-=begin     # rubocop:disable MethodLength
       def submit_state_id(state_id_data, session_id = nil)
-        if !SUPPORTED_STATES.include? state_id_data[:state_id_jurisdiction]
-          failed_confirmation(
-            MockResponse.new(session: session_id, reasons: ['invalid jurisdiction']),
-            state_id_jurisdiction: 'The jurisdiction could not be verified'
-          )
-        elsif state_id_data[:state_id_number] =~ /\A0*\z/
-          failed_confirmation(
-            MockResponse.new(session: session_id, reasons: ['invalid state id number']),
-            state_id_number: 'The state ID number could not be verified'
-          )
-        else
-          successful_confirmation(
-            MockResponse.new(session: session_id, reasons: ['valid state ID'])
-          )
-        end
-      end 
-      # rubocop:enable MethodLength
-=end
-
-      def submit_state_id(state_id_data, session_id = nil)
-        if invalid_state_submission?(state_id_data)
-          return unsuccessful_state_confirmation 
+        if state_not_supported?(state_id_data)
+          unsuccessful_state_confirmation(session_id)
         elsif invalid_state_id_number?(state_id_data)
-          return unsuccessful_state_id_confirmation
+          unsuccessful_state_id_confirmation(session_id)
+        elsif invalid_state_id_type?(state_id_data)
+          unsuccessful_state_id_type_confirmation(session_id)
         else
-          successful_state_confirmation
+          successful_state_confirmation(session_id)
         end
       end
-      
-      def invalid_state_submission?(state_id_data)
-        state_not_supported?(state_id_data) || invalid_state_id_number?(state_id_data)
-      end
-      
+
       def state_not_supported?(state_id_data)
-       !SUPPORTED_STATES.include? state_id_data[:state_id_jurisdiction]
+        !SUPPORTED_STATES.include? state_id_data[:state_id_jurisdiction]
       end
-      
-      def unsuccessful_state_confirmation(state_id_data, session_id = nil)
+
+      def unsuccessful_state_confirmation(session_id)
         failed_confirmation(
           MockResponse.new(session: session_id, reasons: ['invalid jurisdiction']),
           state_id_jurisdiction: 'The jurisdiction could not be verified'
         )
       end
 
-      def successful_state_confirmation(state_id_data, session_id = nil)
+      def successful_state_confirmation(session_id)
         successful_confirmation(
           MockResponse.new(session: session_id, reasons: ['valid state ID'])
         )
@@ -106,11 +87,23 @@ module Proofer
         state_id_data[:state_id_number] =~ /\A0*\z/
       end
 
-      def unsuccessful_state_id_confirmation(state_id_data, session_id = nil)
+      def unsuccessful_state_id_confirmation(session_id)
         failed_confirmation(
           MockResponse.new(session: session_id, reasons: ['invalid state id number']),
           state_id_number: 'The state ID number could not be verified'
         )
+      end
+
+      def unsuccessful_state_id_type_confirmation(session_id)
+        failed_confirmation(
+          MockResponse.new(session: session_id, reasons: ['invalid state id type']),
+          state_id_type: 'The state ID type could not be verified'
+        )
+      end
+
+      def invalid_state_id_type?(state_id_data)
+        !SUPPORTED_STATE_ID_TYPES.include?(state_id_data[:state_id_type]) ||
+          state_id_data[:state_id_type].nil?
       end
 
       def coerce_vendor_applicant(applicant)

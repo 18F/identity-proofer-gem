@@ -315,7 +315,7 @@ describe Proofer::Vendor::Mock do
         {
           state_id_number: '123456789',
           state_id_jurisdiction: 'WA',
-          state_id_type: 'drivers_permit'
+          state_id_type: 'passport'
         },
         resolution.session_id
       )

@@ -18,7 +18,7 @@ module Proofer
       ).freeze
 
       SUPPORTED_STATE_ID_TYPES = %w(
-        drivers_license state_id_card
+        drivers_license drivers_permit state_id_card
       ).freeze
 
       def submit_answers(question_set, session_id = nil)

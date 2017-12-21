@@ -13,13 +13,13 @@ module Proofer
         'bear'  => 'schools'
       }.freeze
 
-      SUPPORTED_STATES = %w(
+      SUPPORTED_STATES = %w[
         AR AZ CA DC DE FL IA ID IL IN KY MD ME MI MS NA ND NE NM PA SD TX VA WA WI
-      ).freeze
+      ].freeze
 
-      SUPPORTED_STATE_ID_TYPES = %w(
+      SUPPORTED_STATE_ID_TYPES = %w[
         drivers_license drivers_permit state_id_card
-      ).freeze
+      ].freeze
 
       def submit_answers(question_set, session_id = nil)
         report = build_answer_report(question_set, session_id)
@@ -31,10 +31,10 @@ module Proofer
       end
 
       def submit_financials(financials, session_id = nil)
-        if financials.is_a?(Hash) && !financial_errors(financials).empty?
+        financial_failures = financial_errors(financials)
+        if financials.is_a?(Hash) && !financial_failures.empty?
           failed_confirmation(
-            MockResponse.new(session: session_id, reasons: ['Bad number']),
-            financial_errors(financials)
+            MockResponse.new(session: session_id, reasons: ['Bad number']), financial_failures
           )
         else
           successful_confirmation(
@@ -102,8 +102,8 @@ module Proofer
       end
 
       def invalid_state_id_type?(state_id_data)
-        !SUPPORTED_STATE_ID_TYPES.include?(state_id_data[:state_id_type]) ||
-          state_id_data[:state_id_type].nil?
+        state_id_type = state_id_data[:state_id_type]
+        !SUPPORTED_STATE_ID_TYPES.include?(state_id_type) || state_id_type.nil?
       end
 
       def coerce_vendor_applicant(applicant)
@@ -126,7 +126,7 @@ module Proofer
           pass_resolution(uuid)
         end
       end
-      # rubocop:enable MethodLength, AbcSize
+      # rubocop:MethodLength, AbcSize
 
       # rubocop:disable all
       def build_question_set(_vendor_resp)
@@ -275,21 +275,15 @@ module Proofer
       end
 
       def bank_account_type_valid?(financials)
-        return true if financials[:bank_account].nil?
-        return false if financials[:bank_account_type].nil?
-        return false unless %w(checking savings).include?(financials[:bank_account_type].to_s)
-        true
+        return  financials[:bank_account].nil? || 
+                %w[checking savings].include?(financials[:bank_account_type].to_s)
       end
 
       def build_answer_report(question_set, session_id)
         report = { session: session_id }
         question_set.each do |question|
           key = question.key
-          report[key] = if ANSWERS[key] == question.answer
-                          true
-                        else
-                          false
-                        end
+          report[key] = false unless ANSWERS[key] == question.answer
         end
         report
       end

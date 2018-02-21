@@ -14,7 +14,7 @@ module Proofer
       }.freeze
 
       SUPPORTED_STATES = %w(
-        AR AZ CA DC DE FL IA ID IL IN KY MD ME MI MS NA ND NE NM PA SD TX VA WA WI
+        AR AZ CO DC DE FL IA ID IL IN KY MA MD ME MI MS MT ND NE NJ NM PA SD TX VA WA WI WY
       ).freeze
 
       SUPPORTED_STATE_ID_TYPES = %w(

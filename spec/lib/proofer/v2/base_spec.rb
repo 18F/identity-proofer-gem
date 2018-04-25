@@ -71,7 +71,7 @@ describe Proofer::Base do
     end
   end
 
-  describe 'to_values' do
+  describe '#to_values' do
     subject { impl.to_values(applicant) }
 
     it 'is a hash where the value is just the value' do
@@ -81,6 +81,27 @@ describe Proofer::Base do
         last_name: 'Corwin' ,
         ssn: '111111111',
       })
+    end
+  end
+
+  describe '.require_attrs' do
+    subject { impl.require_attrs(attrs, [:foo, :bar]) }
+
+    context 'when all attributes are present' do
+      let(:attrs) { { foo: 'bar', bar: 'baz' } }
+
+      it 'does not raise' do
+        expect { subject }.not_to raise_exception
+      end
+    end
+
+    context 'when attributes are not present' do
+
+      let(:attrs) { { bar: '' } }
+
+      it 'raises' do
+        expect { subject }.to raise_exception("Required attributes bar, foo are not present")
+      end
     end
   end
 
@@ -114,6 +135,18 @@ describe Proofer::Base do
       impl.required_attributes :first_name, :last_name
       impl.proofed_attributes :ssn
       impl.proof(&logic)
+    end
+
+    context 'when required attributes are missing' do
+
+      let(:logic) { Proc.new { |a| proofed_attrs } }
+      let(:applicant) { { } }
+
+      subject { impl.new().proof(applicant) }
+
+      it 'raises' do
+        expect { subject }.to raise_exception("Required attributes first_name, last_name, ssn are not present")
+      end
     end
 
     context 'when proofing succeeds' do

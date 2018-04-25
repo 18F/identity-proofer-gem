@@ -30,12 +30,16 @@ module Proofer
       def to_values(applicant)
         applicant.map { |k, v| [k, v[:value]] }.to_h
       end
+
+      def require_attrs(applicant_attrs, required_attrs)
+        empty_attrs = (applicant_attrs.select { |_, v| v.nil? || v.empty? }.keys) | (required_attrs - applicant_attrs.keys)
+        raise "Required attributes #{empty_attrs.join(', ')} are not present" if empty_attrs.any?
+      end
     end
 
     def proof(applicant)
       reasons = Set.new()
-      vendor_attrs = to_values(restrict_attrs(applicant))
-      # TODO validate all present
+      vendor_attrs = require_attrs(to_values(restrict_attrs(applicant)), )
       begin
         proofed_attrs = self.class.proofer.call(vendor_attrs, reasons)
 
@@ -58,6 +62,10 @@ module Proofer
 
     def to_values(applicant)
       self.class.to_values(applicant)
+    end
+
+    def require_attrs(applicant)
+      self.class.require_attrs(applicant, self.class.required_attrs | self.class.proofed_attrs)
     end
 
     def update_applicant(applicant, attrs)

@@ -1,3 +1,4 @@
+require 'forwardable'
 require 'proofer/question'
 require 'proofer/question_choice'
 

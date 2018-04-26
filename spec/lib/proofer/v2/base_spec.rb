@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'proofer/v2/base'
-
 describe Proofer::Base do
   let(:impl) { Class.new(Proofer::Base) }
 

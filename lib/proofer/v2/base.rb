@@ -1,5 +1,4 @@
 require 'set'
-require 'proofer/v2/result'
 
 module Proofer
   class Base

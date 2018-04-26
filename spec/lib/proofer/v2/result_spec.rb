@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'proofer/v2/result'
-
 describe Proofer::Result do
   describe '#add_error' do
     let(:error) { 'FOOBAR' }

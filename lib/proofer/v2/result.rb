@@ -1,45 +1,35 @@
 module Proofer
   class Result
-    ERROR = :error
-    FAILED = :failed
-    SUCCESS = :success
+    attr_reader :errors, :messages, :exception
+    attr_accessor :context
 
-    class << self
-
-      private :new
-
-      def error(applicant, error)
-        new(status: ERROR, applicant: applicant, error: error)
-      end
-
-      def failed(applicant, reasons = Set.new())
-        new(status: FAILED, applicant: applicant, reasons: reasons)
-      end
-
-      def success(applicant, reasons = Set.new())
-        new(status: SUCCESS, applicant: applicant, reasons: reasons)
-      end
+    def initialize(errors: Set.new, messages: Set.new, context: {}, exception: nil)
+      @errors = errors
+      @messages = messages
+      @context = context
+      @exception = exception
     end
 
-    attr_reader :status, :applicant, :reasons, :error
-
-    def initialize(status:, applicant:, reasons: Set.new(), error: nil)
-      @status = status
-      @applicant = applicant
-      @reasons = reasons
-      @error = error
+    def add_error(error)
+      @errors.add(error)
+      self
     end
 
-    def error?
-      status == ERROR
+    def add_message(message)
+      @messages.add(message)
+      self
+    end
+
+    def exception?
+      !@exception.nil?
     end
 
     def failed?
-      status == FAILED
+      @exception.nil? && errors.any?
     end
 
     def success?
-      status == SUCCESS
+      @exception.nil? && errors.empty?
     end
   end
 end

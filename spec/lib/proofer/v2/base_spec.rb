@@ -3,92 +3,62 @@ require 'spec_helper'
 require 'proofer/v2/base'
 
 describe Proofer::Base do
-
   let(:impl) { Class.new(Proofer::Base) }
 
   let(:applicant) do
     {
-      first_name: { value: 'Dave', verified: false },
-      last_name: { value: 'Corwin', verified: false },
-      dob: { value: '01/01/2000', verified: false },
-      ssn: { value: '111111111', verified: false },
+      first_name: 'Dave',
+      last_name: 'Corwin',
+      dob: '01/01/2000',
+      ssn: '111111111'
     }
   end
 
   describe '.required_attributes' do
-    let(:attributes) { [:foo, :bar] }
-    it 'stores the required attributes and exposes them via `required_attrs`' do
-      impl.required_attributes(*attributes)
-      expect(impl.required_attrs).to eq(attributes)
+    let(:attributes) { %i[foo bar] }
+    it 'stores the required attributes and exposes them via `required_attributes`' do
+      impl.attributes(*attributes)
+      expect(impl.required_attributes).to eq(attributes)
     end
   end
 
-  describe '.proofed_attributes' do
-    let(:attributes) { [:foo, :bar] }
-    it 'stores the proofed attributes and exposes them via `proofed_attrs`' do
-      impl.proofed_attributes(*attributes)
-      expect(impl.proofed_attrs).to eq(attributes)
+  describe '.stage' do
+    let(:stage) { :foo }
+    it 'stores the stage and exposes it via `suuported_stage`' do
+      impl.stage(stage)
+      expect(impl.supported_stage).to eq(stage)
     end
   end
 
   describe '.proof' do
-    let(:logic) { Proc.new { |a, r| {} } }
+    let(:logic) { proc {} }
     it 'stores the proof logic and exposes it via `proofer`' do
       impl.proof(&logic)
       expect(impl.proofer).to eq(logic)
     end
   end
 
-  describe '.all_verified?' do
-    subject { impl.all_verified?(attributes) }
+  describe '#restrict_attributes' do
+    let(:attributes) { %i[last_name ssn] }
 
-    context 'when all are true' do
-      let(:attributes) {{ foo: true, bar: true, baz: true }}
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when one is false' do
-      let(:attributes) {{ foo: true, bar: false, baz: true }}
-      it { is_expected.to eq(false) }
-    end
-
-    context 'when it is empty' do
-      let(:attributes) {{ }}
-      it { is_expected.to eq(true) }
-    end
-  end
-
-  describe '.restrict_attrs' do
-    subject { impl.restrict_attrs(applicant, attributes) }
-
-    let(:attributes) { [:last_name, :ssn] }
+    before { impl.attributes(*attributes) }
 
     it 'is a hash containing only the keys listed in attributes' do
-      expect(subject).to eq({
-        last_name: { value: 'Corwin', verified: false },
-        ssn: { value: '111111111', verified: false },
-      })
+      restricted_attributes = impl.new.send(:restrict_attributes, applicant)
+
+      expect(restricted_attributes).to eq(last_name: 'Corwin', ssn: '111111111')
     end
   end
 
-  describe '#to_values' do
-    subject { impl.to_values(applicant) }
+  describe '#validate_attributes!' do
+    let(:attributes) { %i[first_name last_name] }
 
-    it 'is a hash where the value is just the value' do
-      expect(subject).to eq({
-        first_name: 'Dave',
-        dob: '01/01/2000',
-        last_name: 'Corwin' ,
-        ssn: '111111111',
-      })
-    end
-  end
+    before { impl.attributes(*attributes) }
 
-  describe '.require_attrs' do
-    subject { impl.require_attrs(attrs, [:foo, :bar]) }
+    subject { impl.new.send(:validate_attributes!, applicant) }
 
     context 'when all attributes are present' do
-      let(:attrs) { { foo: 'bar', bar: 'baz' } }
+      let(:applicant) { { first_name: 'Homer', last_name: 'Simpson' } }
 
       it 'does not raise' do
         expect { subject }.not_to raise_exception
@@ -96,165 +66,78 @@ describe Proofer::Base do
     end
 
     context 'when attributes are not present' do
-
-      let(:attrs) { { bar: '' } }
+      let(:applicant) { { first_name: '' } }
 
       it 'raises' do
-        expect { subject }.to raise_exception("Required attributes bar, foo are not present")
+        expect { subject }.to raise_exception('Required attributes first_name, last_name are not present')
       end
     end
-  end
-
-  let(:attrs) do
-    {
-      first_name: 'Dave',
-      last_name: 'Corwin',
-      ssn: '111111111',
-    }
-  end
-
-  let(:proofed_attrs) do
-    {
-      first_name: true,
-      last_name: true,
-      ssn: true,
-    }
-  end
-
-  let(:verified_applicant) do
-    {
-      first_name: { value: 'Dave', verified: true },
-      last_name: { value: 'Corwin', verified: true },
-      dob: { value: '01/01/2000', verified: false },
-      ssn: { value: '111111111', verified: true },
-    }
   end
 
   describe '#proof' do
     before do
-      impl.required_attributes :first_name, :last_name
-      impl.proofed_attributes :ssn
+      impl.attributes :first_name, :last_name, :ssn
       impl.proof(&logic)
     end
 
     context 'when required attributes are missing' do
+      let(:logic) { proc {} }
 
-      let(:logic) { Proc.new { |a| proofed_attrs } }
-      let(:applicant) { { } }
+      subject { impl.new.proof({}) }
 
-      subject { impl.new().proof(applicant) }
-
-      it 'raises' do
-        expect { subject }.to raise_exception("Required attributes first_name, last_name, ssn are not present")
+      it 'returns a result with an exception' do
+        expect(subject.exception?).to eq(true)
+        expect(subject.failed?).to eq(false)
+        expect(subject.success?).to eq(false)
+        expect(subject.errors).to be_empty
+        expect(subject.messages).to be_empty
+        expect(subject.exception).not_to be_nil
+        expect(subject.exception.message).to eq('Required attributes first_name, last_name, ssn are not present')
       end
     end
 
     context 'when proofing succeeds' do
+      let(:logic) { proc {} }
 
-      let(:proofed_attrs) { { first_name: true, last_name: true, ssn: true } }
+      subject { impl.new.proof(applicant) }
 
-      let(:proofed_applicant) { {
-        first_name: { value: 'Dave', verified: true },
-        last_name: { value: 'Corwin', verified: true },
-        dob: { value: '01/01/2000', verified: false },
-        ssn: { value: '111111111', verified: true },
-      } }
-
-      shared_examples 'a successful proof' do
-        it 'succeeds' do
-          expect(subject.error?).to eq(false)
-          expect(subject.failed?).to eq(false)
-          expect(subject.success?).to eq(true)
-          expect(subject.applicant).to eq(proofed_applicant)
-        end
-      end
-
-      context 'without reasons' do
-
-        let(:logic) { Proc.new { |a| proofed_attrs } }
-
-        subject { impl.new().proof(applicant) }
-
-        it_behaves_like 'a successful proof'
-
-        it 'has no reasons' do
-          expect(subject.reasons.length).to eq(0)
-        end
-      end
-
-      context 'with reasons' do
-        let(:reasons) { ['foo', 'bar']}
-        let(:logic) { Proc.new { |a, r| r.merge(reasons); proofed_attrs } }
-
-        subject { impl.new().proof(applicant) }
-
-        it_behaves_like 'a successful proof'
-
-        it 'has reasons' do
-          expect(subject.reasons.to_a).to eq(reasons)
-        end
+      it 'returns a successful result' do
+        expect(subject.exception?).to eq(false)
+        expect(subject.failed?).to eq(false)
+        expect(subject.success?).to eq(true)
+        expect(subject.errors).to be_empty
+        expect(subject.messages).to be_empty
+        expect(subject.exception).to be_nil
       end
     end
 
     context 'when proofing fails' do
+      let(:logic) { proc { |_, result| result.add_error('uh oh') } }
 
-      let(:proofed_attrs) { { first_name: true, last_name: true, ssn: false } }
+      subject { impl.new.proof(applicant) }
 
-      let(:proofed_applicant) { {
-        first_name: { value: 'Dave', verified: true },
-        last_name: { value: 'Corwin', verified: true },
-        dob: { value: '01/01/2000', verified: false },
-        ssn: { value: '111111111', verified: false },
-      } }
-
-      shared_examples 'a failed proof' do
-        it 'succeeds' do
-          expect(subject.error?).to eq(false)
-          expect(subject.failed?).to eq(true)
-          expect(subject.success?).to eq(false)
-          expect(subject.applicant).to eq(proofed_applicant)
-        end
-      end
-
-      context 'without reasons' do
-
-        let(:logic) { Proc.new { |a| proofed_attrs } }
-
-        subject { impl.new().proof(applicant) }
-
-        it_behaves_like 'a failed proof'
-
-        it 'has no reasons' do
-          expect(subject.reasons.length).to eq(0)
-        end
-      end
-
-      context 'with reasons' do
-        let(:reasons) { ['foo', 'bar']}
-        let(:logic) { Proc.new { |a, r| r.merge(reasons); proofed_attrs } }
-
-        subject { impl.new().proof(applicant) }
-
-        it_behaves_like 'a failed proof'
-
-        it 'has reasons' do
-          expect(subject.reasons.to_a).to eq(reasons)
-        end
+      it 'returns a failed result' do
+        expect(subject.exception?).to eq(false)
+        expect(subject.failed?).to eq(true)
+        expect(subject.success?).to eq(false)
+        expect(subject.errors).not_to be_empty
+        expect(subject.messages).to be_empty
+        expect(subject.exception).to be_nil
       end
     end
 
-    context 'when proofing errors' do
+    context 'when proofing causes an exception' do
+      let(:logic) { proc { raise 'FOOBAR!!!' } }
 
-      let(:logic) { Proc.new { |a| raise 'Oh Snap!' } }
+      subject { impl.new.proof(applicant) }
 
-      subject { impl.new().proof(applicant) }
-
-      it 'errors' do
-        expect(subject.error?).to eq(true)
+      it 'returns a result with an exception' do
+        expect(subject.exception?).to eq(true)
         expect(subject.failed?).to eq(false)
         expect(subject.success?).to eq(false)
-        expect(subject.reasons.length).to eq(0)
-        expect(subject.applicant).to eq(applicant)
+        expect(subject.errors).to be_empty
+        expect(subject.messages).to be_empty
+        expect(subject.exception).not_to be_nil
       end
     end
   end

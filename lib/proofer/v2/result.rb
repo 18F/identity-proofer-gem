@@ -1,6 +1,6 @@
 module Proofer
   class Result
-    attr_reader :errors, :messages, :exception
+    attr_reader :exception
     attr_accessor :context
 
     def initialize(errors: {}, messages: Set.new, context: {}, exception: nil)
@@ -20,16 +20,34 @@ module Proofer
       self
     end
 
+    def errors
+      # Hack city since `transform_values` isn't available until Ruby 2.4
+      @errors.merge(@errors) { |_, v1| v1.to_a }
+    end
+
+    def messages
+      @messages.to_a
+    end
+
     def exception?
       !@exception.nil?
     end
 
     def failed?
-      @exception.nil? && errors.any?
+      @exception.nil? && @errors.any?
     end
 
     def success?
-      @exception.nil? && errors.empty?
+      @exception.nil? && @errors.empty?
+    end
+
+    def to_h
+      {
+        errors: errors,
+        messages: messages,
+        exception: exception,
+        success: success?,
+      }
     end
   end
 end

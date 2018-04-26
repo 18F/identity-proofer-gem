@@ -8,11 +8,11 @@ describe Proofer::Result do
       end
 
       it "adds an error under the key" do
-        expect(result.errors[key].to_a).to eq([error])
+        expect(result.errors[key]).to eq([error])
       end
 
       it 'does not add duplicate error' do
-        expect(result.add_error(error).errors[key].to_a).to eq([error])
+        expect(result.add_error(error).errors[key]).to eq([error])
       end
     end
 
@@ -38,11 +38,11 @@ describe Proofer::Result do
     end
 
     it 'adds a message' do
-      expect(result.messages.to_a).to eq([message])
+      expect(result.messages).to eq([message])
     end
 
     it 'does not add duplicate message' do
-      expect(result.add_message(message).messages.to_a).to eq([message])
+      expect(result.add_message(message).messages).to eq([message])
     end
   end
 

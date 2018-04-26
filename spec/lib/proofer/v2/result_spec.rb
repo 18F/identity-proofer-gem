@@ -2,19 +2,30 @@ require 'spec_helper'
 
 describe Proofer::Result do
   describe '#add_error' do
+    shared_examples 'add_error' do |key|
+      it 'returns itself' do
+        expect(result).to be_an_instance_of(Proofer::Result)
+      end
+
+      it "adds an error under the key" do
+        expect(result.errors[key].to_a).to eq([error])
+      end
+
+      it 'does not add duplicate error' do
+        expect(result.add_error(error).errors[key].to_a).to eq([error])
+      end
+    end
+
     let(:error) { 'FOOBAR' }
-    let(:result) { Proofer::Result.new.add_error(error) }
 
-    it 'returns itself' do
-      expect(result).to be_an_instance_of(Proofer::Result)
+    context 'with no key' do
+      let(:result) { Proofer::Result.new.add_error(error) }
+      it_behaves_like 'add_error', :base
     end
 
-    it 'adds an error' do
-      expect(result.errors.to_a).to eq([error])
-    end
-
-    it 'does not add duplicate error' do
-      expect(result.add_error(error).errors.to_a).to eq([error])
+    context 'with a key' do
+      let(:result) { Proofer::Result.new.add_error(:foo, error) }
+      it_behaves_like 'add_error', :foo
     end
   end
 

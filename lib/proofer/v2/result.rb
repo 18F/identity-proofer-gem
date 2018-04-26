@@ -3,15 +3,15 @@ module Proofer
     attr_reader :errors, :messages, :exception
     attr_accessor :context
 
-    def initialize(errors: Set.new, messages: Set.new, context: {}, exception: nil)
+    def initialize(errors: {}, messages: Set.new, context: {}, exception: nil)
       @errors = errors
       @messages = messages
       @context = context
       @exception = exception
     end
 
-    def add_error(error)
-      @errors.add(error)
+    def add_error(key = :base, error)
+      (@errors[key] ||= Set.new).add(error)
       self
     end
 

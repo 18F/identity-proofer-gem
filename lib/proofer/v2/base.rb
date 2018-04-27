@@ -19,10 +19,10 @@ module Proofer
     end
 
     def proof(applicant)
-      result = Proofer::Result.new
       vendor_applicant = restrict_attributes(applicant)
       validate_attributes!(vendor_applicant)
-      proofer.call(vendor_applicant, result)
+      result = Proofer::Result.new
+      instance_exec(vendor_applicant, result, &proofer)
       result
     rescue StandardError => exception
       Proofer::Result.new(exception: exception)

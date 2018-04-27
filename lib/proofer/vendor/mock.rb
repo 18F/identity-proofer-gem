@@ -10,16 +10,16 @@ module Proofer
         'color' => 'blue',
         'speed' => '55',
         'quest' => 'proof',
-        'bear'  => 'schools'
+        'bear'  => 'schools',
       }.freeze
 
-      SUPPORTED_STATES = %w(
+      SUPPORTED_STATES = %w[
         AR AZ CO DC DE FL IA ID IL IN KY MA MD ME MI MS MT ND NE NJ NM PA SD TX VA WA WI WY
-      ).freeze
+      ].freeze
 
-      SUPPORTED_STATE_ID_TYPES = %w(
+      SUPPORTED_STATE_ID_TYPES = %w[
         drivers_license drivers_permit state_id_card
-      ).freeze
+      ].freeze
 
       def submit_answers(question_set, session_id = nil)
         report = build_answer_report(question_set, session_id)
@@ -264,9 +264,7 @@ module Proofer
       def financial_errors(financials)
         errors = financials.each_with_object({}) do |pair, error_hash|
           key, value = pair
-          if value == '00000000'
-            error_hash[key] = "The #{key} could not be verified."
-          end
+          error_hash[key] = "The #{key} could not be verified." if value == '00000000'
         end
         unless bank_account_type_valid?(financials)
           errors[:bank_account_type] = 'The bank_account_type could not be verified.'
@@ -277,7 +275,7 @@ module Proofer
       def bank_account_type_valid?(financials)
         return true if financials[:bank_account].nil?
         return false if financials[:bank_account_type].nil?
-        return false unless %w(checking savings).include?(financials[:bank_account_type].to_s)
+        return false unless %w[checking savings].include?(financials[:bank_account_type].to_s)
         true
       end
 
@@ -285,11 +283,7 @@ module Proofer
         report = { session: session_id }
         question_set.each do |question|
           key = question.key
-          report[key] = if ANSWERS[key] == question.answer
-                          true
-                        else
-                          false
-                        end
+          report[key] = ANSWERS[key] == question.answer
         end
         report
       end

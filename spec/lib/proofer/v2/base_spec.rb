@@ -8,7 +8,7 @@ describe Proofer::Base do
       first_name: 'Dave',
       last_name: 'Corwin',
       dob: '01/01/2000',
-      ssn: '111111111'
+      ssn: '111111111',
     }
   end
 
@@ -67,7 +67,8 @@ describe Proofer::Base do
       let(:applicant) { { first_name: '' } }
 
       it 'raises' do
-        expect { subject }.to raise_exception('Required attributes first_name, last_name are not present')
+        expect { subject }.
+          to raise_exception('Required attributes first_name, last_name are not present')
       end
     end
   end
@@ -90,7 +91,8 @@ describe Proofer::Base do
         expect(subject.errors).to be_empty
         expect(subject.messages).to be_empty
         expect(subject.exception).not_to be_nil
-        expect(subject.exception.message).to eq('Required attributes first_name, last_name, ssn are not present')
+        expect(subject.exception.message).
+          to eq('Required attributes first_name, last_name, ssn are not present')
       end
     end
 

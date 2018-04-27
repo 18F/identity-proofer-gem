@@ -10,7 +10,7 @@ module Proofer
       self.session_id = opts[:session_id]
       self.errors = opts[:errors] || {}
       questions = opts[:questions]
-      if questions && questions.is_a?(Proofer::QuestionSet)
+      if questions&.is_a?(Proofer::QuestionSet)
         self.questions = questions
       elsif questions
         self.questions = Proofer::QuestionSet.new(questions)

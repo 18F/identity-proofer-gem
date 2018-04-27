@@ -12,7 +12,7 @@ describe Proofer::Vendor::Mock do
       address1: '1234 Main St',
       city: 'St. Somewhere',
       state: 'KS',
-      zipcode: '66666'
+      zipcode: '66666',
     }
   end
 
@@ -85,7 +85,7 @@ describe Proofer::Vendor::Mock do
     end
 
     it 'fails on 00000 zipcode' do
-      [:zipcode, :prev_zipcode].each do |zipcode|
+      %i[zipcode prev_zipcode].each do |zipcode|
         mocker = described_class.new
         resolution = mocker.start zipcode => '00000'
 
@@ -147,11 +147,13 @@ describe Proofer::Vendor::Mock do
   end
 
   describe '#submit_financials' do
-    [:ccn, :mortgage, :home_equity_line, :auto_loan].each do |finance_type|
+    %i[ccn mortgage home_equity_line auto_loan].each do |finance_type|
       it "succeeds with #{finance_type}" do
         mocker = described_class.new applicant: applicant
         resolution = mocker.start
-        confirmation = mocker.submit_financials({ finance_type => '12345678' }, resolution.session_id)
+        confirmation = mocker.submit_financials(
+          { finance_type => '12345678' }, resolution.session_id
+        )
 
         expect(confirmation.success).to eq true
         expect(confirmation.errors).to eq({})
@@ -160,10 +162,13 @@ describe Proofer::Vendor::Mock do
       it "fails with bad #{finance_type}" do
         mocker = described_class.new applicant: applicant
         resolution = mocker.start
-        confirmation = mocker.submit_financials({ finance_type => '00000000' }, resolution.session_id)
+        confirmation = mocker.submit_financials(
+          { finance_type => '00000000' }, resolution.session_id
+        )
 
         expect(confirmation.success).to eq false
-        expect(confirmation.errors).to eq(finance_type => "The #{finance_type} could not be verified.")
+        expect(confirmation.errors).
+          to eq(finance_type => "The #{finance_type} could not be verified.")
       end
     end
 
@@ -174,7 +179,7 @@ describe Proofer::Vendor::Mock do
         {
           bank_account: '1234567',
           bank_routing: '1234567',
-          bank_account_type: :checking
+          bank_account_type: :checking,
         },
         resolution.session_id
       )
@@ -190,7 +195,7 @@ describe Proofer::Vendor::Mock do
         {
           bank_account: '00000000',
           bank_routing: '1234567',
-          bank_account_type: :checking
+          bank_account_type: :checking,
         },
         resolution.session_id
       )
@@ -206,13 +211,14 @@ describe Proofer::Vendor::Mock do
         {
           bank_account: '1234567',
           bank_routing: '1234567',
-          bank_account_type: :qwerty
+          bank_account_type: :qwerty,
         },
         resolution.session_id
       )
 
       expect(confirmation.success).to eq false
-      expect(confirmation.errors).to eq(bank_account_type: 'The bank_account_type could not be verified.')
+      expect(confirmation.errors).
+        to eq(bank_account_type: 'The bank_account_type could not be verified.')
     end
 
     it 'fails if bank_account_type is missing' do
@@ -221,13 +227,14 @@ describe Proofer::Vendor::Mock do
       confirmation = mocker.submit_financials(
         {
           bank_account: '1234567',
-          bank_routing: '1234567'
+          bank_routing: '1234567',
         },
         resolution.session_id
       )
 
       expect(confirmation.success).to eq false
-      expect(confirmation.errors).to eq(bank_account_type: 'The bank_account_type could not be verified.')
+      expect(confirmation.errors).
+        to eq(bank_account_type: 'The bank_account_type could not be verified.')
     end
   end
 
@@ -267,7 +274,7 @@ describe Proofer::Vendor::Mock do
         {
           state_id_number: '123456789',
           state_id_type: 'drivers_license',
-          state_id_jurisdiction: 'WA'
+          state_id_jurisdiction: 'WA',
         },
         resolution.session_id
       )
@@ -283,13 +290,14 @@ describe Proofer::Vendor::Mock do
         {
           state_id_number: '123456789',
           state_id_type: 'drivers_license',
-          state_id_jurisdiction: 'AL'
+          state_id_jurisdiction: 'AL',
         },
         resolution.session_id
       )
 
       expect(confirmation.success).to eq false
-      expect(confirmation.errors).to eq(state_id_jurisdiction: 'The jurisdiction could not be verified')
+      expect(confirmation.errors).
+        to eq(state_id_jurisdiction: 'The jurisdiction could not be verified')
     end
 
     it 'fails with invalid state id' do
@@ -299,13 +307,14 @@ describe Proofer::Vendor::Mock do
         {
           state_id_number: '000000000',
           state_id_jurisdiction: 'WA',
-          state_id_type: 'drivers_license'
+          state_id_type: 'drivers_license',
         },
         resolution.session_id
       )
 
       expect(confirmation.success).to eq false
-      expect(confirmation.errors).to eq(state_id_number: 'The state ID number could not be verified')
+      expect(confirmation.errors).
+        to eq(state_id_number: 'The state ID number could not be verified')
     end
 
     it 'fails with invalid state id type' do
@@ -315,7 +324,7 @@ describe Proofer::Vendor::Mock do
         {
           state_id_number: '123456789',
           state_id_jurisdiction: 'WA',
-          state_id_type: 'passport'
+          state_id_type: 'passport',
         },
         resolution.session_id
       )
@@ -329,7 +338,7 @@ describe Proofer::Vendor::Mock do
       confirmation = mocker.submit_state_id(
         {
           state_id_number: '123456789',
-          state_id_jurisdiction: 'WA'
+          state_id_jurisdiction: 'WA',
         },
         resolution.session_id
       )

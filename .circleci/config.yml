@@ -9,6 +9,7 @@ jobs:
       # Specify the Ruby version you desire here
       - image: circleci/ruby:2.3.4
         environment:
+          CC_TEST_REPORTER_ID: b492957f6df97f9c3079b494cf578be9ec52420edf592293f471c111217efca6
 
     working_directory: ~/identity-proofer-gem
 
@@ -31,9 +32,23 @@ jobs:
             - vendor/bundle
 
       - run:
+          name: Install Code Climate Test Reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      - run:
           name: Run Tests
           command: |
+            mkdir /tmp/test-results
+            ./cc-test-reporter before-build
             bundle exec rake test
+
+      - run:
+          name: Upload Test Results to Code Climate
+          command:
+            ./cc-test-reporter format-coverage -t simplecov $CIRCLE_ARTIFACTS/coverage/.resultset.json
+            ./cc-test-reporter upload-coverage
 
       # collect reports
       - store_test_results:

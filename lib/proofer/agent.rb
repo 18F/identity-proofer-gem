@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Proofer
   class Agent
     attr_accessor :vendor

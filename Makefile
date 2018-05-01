@@ -10,9 +10,9 @@ check: lint test
 
 lint: $(CONFIG)
 	@echo "--- rubocop ---"
-	rubocop
+	bundle exec rubocop
 	@echo "--- reek ---"
-	reek
+	bundle exec reek
 
 test:
 	rake test

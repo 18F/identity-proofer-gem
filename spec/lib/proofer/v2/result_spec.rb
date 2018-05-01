@@ -7,7 +7,7 @@ describe Proofer::Result do
         expect(result).to be_an_instance_of(Proofer::Result)
       end
 
-      it "adds an error under the key" do
+      it 'adds an error under the key' do
         expect(result.errors[key]).to eq([error])
       end
 

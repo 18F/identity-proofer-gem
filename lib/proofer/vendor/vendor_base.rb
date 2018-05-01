@@ -14,9 +14,7 @@ module Proofer
       end
 
       def start(args = nil)
-        if args && !applicant
-          self.applicant = coerce_applicant(args)
-        end
+        self.applicant = coerce_applicant(args) if args && !applicant
         perform_resolution
       end
 

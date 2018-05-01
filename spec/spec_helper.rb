@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start
+
 # use local 'lib' dir in include path
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
 require 'pp'

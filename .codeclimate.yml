@@ -1,0 +1,59 @@
+version: "2" # required to adjust maintainability checks
+checks:
+  argument-count:
+    config:
+      threshold: 4
+  complex-logic:
+    config:
+      threshold: 4
+  file-lines:
+    enabled: false
+  method-complexity:
+    config:
+      threshold: 5
+  method-count:
+    enabled: false
+  method-lines:
+    enabled: false
+  nested-control-flow:
+    config:
+      threshold: 4
+  return-statements:
+    config:
+      threshold: 4
+  similar-code:
+    enabled: false
+    config:
+      threshold: # language-specific defaults. an override will affect all languages.
+  identical-code:
+    enabled: true
+    config:
+      threshold: # language-specific defaults. an override will affect all languages.
+
+plugins:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        ruby:
+    exclude_patterns:
+    - 'spec/**/*'
+  fixme:
+    enabled: true
+    config:
+      strings:
+      - TODO
+      - FIXME
+      - HACK
+      - BUG
+      - XXX
+  reek:
+    enabled: true
+    exclude_patterns:
+    - 'spec/**/*'
+  rubocop:
+    enabled: true
+    channel: rubocop-0-54
+
+exclude_patterns:
+- 'spec/'

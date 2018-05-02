@@ -3,7 +3,11 @@ require 'set'
 module Proofer
   class Base
     class << self
-      attr_reader :required_attributes, :supported_stage, :proofer
+      attr_reader :required_attributes, :supported_stage, :proofer, :vendor_name
+
+      def name(name)
+        @vendor_name = name
+      end
 
       def attributes(*attributes)
         @required_attributes = attributes
@@ -20,7 +24,7 @@ module Proofer
 
     def proof(applicant)
       vendor_applicant = restrict_attributes(applicant)
-      validate_attributes!(vendor_applicant)
+      validate_attributes(vendor_applicant)
       result = Proofer::Result.new
       instance_exec(vendor_applicant, result, &proofer)
       result
@@ -31,11 +35,11 @@ module Proofer
     private
 
     def restrict_attributes(applicant)
-      applicant.select { |k| required_attributes.include?(k) }
+      applicant.select { |attribute| required_attributes.include?(attribute) }
     end
 
-    def validate_attributes!(applicant)
-      empty_attributes = applicant.select { |_, v| v.nil? || v.empty? }.keys
+    def validate_attributes(applicant)
+      empty_attributes = applicant.select { |_, attribute| blank?(attribute) }.keys
       missing_attributes = required_attributes - applicant.keys
       bad_attributes = (empty_attributes | missing_attributes)
       raise error_message(bad_attributes) if bad_attributes.any?
@@ -55,6 +59,10 @@ module Proofer
 
     def proofer
       self.class.proofer
+    end
+
+    def blank?(val)
+      !val || val.empty?
     end
   end
 end

@@ -18,6 +18,7 @@ ManualDispatch:
 NilCheck:
   exclude:
     - Proofer::Vendor::VendorBase
+    - Proofer::Result#exception?
 ControlParameter:
   exclude:
     - Proofer::Vendor::Mock#submit_phone

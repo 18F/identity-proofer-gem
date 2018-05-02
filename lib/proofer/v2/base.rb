@@ -24,7 +24,7 @@ module Proofer
 
     def proof(applicant)
       vendor_applicant = restrict_attributes(applicant)
-      validate_attributes!(vendor_applicant)
+      validate_attributes(vendor_applicant)
       result = Proofer::Result.new
       instance_exec(vendor_applicant, result, &proofer)
       result
@@ -38,8 +38,8 @@ module Proofer
       applicant.select { |attribute| required_attributes.include?(attribute) }
     end
 
-    def validate_attributes!(applicant)
-      empty_attributes = applicant.select { |_, attribute| attribute&.empty? }.keys
+    def validate_attributes(applicant)
+      empty_attributes = applicant.select { |_, attribute| blank?(attribute) }.keys
       missing_attributes = required_attributes - applicant.keys
       bad_attributes = (empty_attributes | missing_attributes)
       raise error_message(bad_attributes) if bad_attributes.any?
@@ -59,6 +59,10 @@ module Proofer
 
     def proofer
       self.class.proofer
+    end
+
+    def blank?(val)
+      !val || val.empty?
     end
   end
 end

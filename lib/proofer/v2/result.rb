@@ -10,10 +10,12 @@ module Proofer
       @exception = exception
     end
 
+    # rubocop:disable Style/OptionalArguments
     def add_error(key = :base, error)
       (@errors[key] ||= Set.new).add(error)
       self
     end
+    # rubocop:enable Style/OptionalArguments
 
     def add_message(message)
       @messages.add(message)
@@ -22,11 +24,15 @@ module Proofer
 
     def errors
       # Hack city since `transform_values` isn't available until Ruby 2.4
-      @errors.merge(@errors) { |_, v1| v1.to_a }
+      @errors.merge(@errors) { |_, error_set| error_set.to_a }
     end
 
     def messages
       @messages.to_a
+    end
+
+    def errors?
+      @errors.any?
     end
 
     def exception?
@@ -34,11 +40,11 @@ module Proofer
     end
 
     def failed?
-      @exception.nil? && @errors.any?
+      !exception? && errors?
     end
 
     def success?
-      @exception.nil? && @errors.empty?
+      !exception? && !errors?
     end
 
     def to_h

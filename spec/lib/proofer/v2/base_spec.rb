@@ -56,12 +56,12 @@ describe Proofer::Base do
     end
   end
 
-  describe '#validate_attributes!' do
+  describe '#validate_attributes' do
     let(:attributes) { %i[first_name last_name] }
 
     before { impl.attributes(*attributes) }
 
-    subject { impl.new.send(:validate_attributes!, applicant) }
+    subject { impl.new.send(:validate_attributes, applicant) }
 
     context 'when all attributes are present' do
       let(:applicant) { { first_name: 'Homer', last_name: 'Simpson' } }

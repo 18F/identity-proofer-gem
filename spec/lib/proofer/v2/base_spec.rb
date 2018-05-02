@@ -36,6 +36,14 @@ describe Proofer::Base do
     end
   end
 
+  describe '.name' do
+    let(:name) { 'foobar:baz' }
+    it 'stores the name and exposes it via `vendor_name`' do
+      impl.name(name)
+      expect(impl.vendor_name).to eq(name)
+    end
+  end
+
   describe '#restrict_attributes' do
     let(:attributes) { %i[last_name ssn] }
 

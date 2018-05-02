@@ -3,7 +3,11 @@ require 'set'
 module Proofer
   class Base
     class << self
-      attr_reader :required_attributes, :supported_stage, :proofer
+      attr_reader :required_attributes, :supported_stage, :proofer, :vendor_name
+
+      def name(name)
+        @vendor_name = name
+      end
 
       def attributes(*attributes)
         @required_attributes = attributes
@@ -31,11 +35,11 @@ module Proofer
     private
 
     def restrict_attributes(applicant)
-      applicant.select { |k| required_attributes.include?(k) }
+      applicant.select { |attribute| required_attributes.include?(attribute) }
     end
 
     def validate_attributes!(applicant)
-      empty_attributes = applicant.select { |_, v| v.nil? || v.empty? }.keys
+      empty_attributes = applicant.select { |_, attribute| attribute&.empty? }.keys
       missing_attributes = required_attributes - applicant.keys
       bad_attributes = (empty_attributes | missing_attributes)
       raise error_message(bad_attributes) if bad_attributes.any?

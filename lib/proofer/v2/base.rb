@@ -17,8 +17,8 @@ module Proofer
         @supported_stage = stage
       end
 
-      def proof(&block)
-        @proofer = block
+      def proof(sym = nil, &block)
+        @proofer = sym || block
       end
     end
 
@@ -26,13 +26,21 @@ module Proofer
       vendor_applicant = restrict_attributes(applicant)
       validate_attributes(vendor_applicant)
       result = Proofer::Result.new
-      instance_exec(vendor_applicant, result, &proofer)
+      execute_proof(proofer, vendor_applicant, result)
       result
     rescue StandardError => exception
       Proofer::Result.new(exception: exception)
     end
 
     private
+
+    def execute_proof(proofer, *args)
+      if proofer.is_a? Symbol
+        send(proofer, *args)
+      else
+        instance_exec(*args, &proofer)
+      end
+    end
 
     def restrict_attributes(applicant)
       applicant.select { |attribute| required_attributes.include?(attribute) }

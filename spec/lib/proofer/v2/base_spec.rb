@@ -1,7 +1,13 @@
 require 'spec_helper'
 
 describe Proofer::Base do
-  let(:impl) { Class.new(Proofer::Base) }
+  let(:impl) do
+    Class.new(Proofer::Base) do
+      def hello(applicant, results)
+        raise 'Uh oh' unless applicant & results
+      end
+    end
+  end
 
   let(:applicant) do
     {
@@ -29,10 +35,20 @@ describe Proofer::Base do
   end
 
   describe '.proof' do
-    let(:logic) { proc {} }
-    it 'stores the proof logic and exposes it via `proofer`' do
-      impl.proof(&logic)
-      expect(impl.proofer).to eq(logic)
+    context 'when logic is a block' do
+      let(:logic) { proc {} }
+      it 'stores the proof logic and exposes it via `proofer`' do
+        impl.proof(logic)
+        expect(impl.proofer).to eq(logic)
+      end
+    end
+
+    context 'when logic is a symbol' do
+      let(:logic) { :foobar }
+      it 'stores the proof logic and exposes it via `proofer`' do
+        impl.proof(logic)
+        expect(impl.proofer).to eq(logic)
+      end
     end
   end
 
@@ -84,7 +100,7 @@ describe Proofer::Base do
   describe '#proof' do
     before do
       impl.attributes :first_name, :last_name, :ssn
-      impl.proof(&logic)
+      impl.proof(logic)
     end
 
     context 'when required attributes are missing' do
@@ -146,6 +162,56 @@ describe Proofer::Base do
         expect(subject.errors).to be_empty
         expect(subject.messages).to be_empty
         expect(subject.exception).not_to be_nil
+      end
+    end
+
+    context 'when the logic calls an instance method' do
+      let(:logic) do
+        proc do |applicant, results|
+          hello(applicant, results)
+        end
+      end
+
+      let(:instance) { impl.new }
+
+      let(:restricted_applicant) do
+        instance.send(:restrict_attributes, applicant)
+      end
+
+      subject { instance.proof(applicant) }
+
+      it 'returns a successful result' do
+        expect(instance).to receive(:hello).
+          with(restricted_applicant, an_instance_of(Proofer::Result))
+        expect(subject.exception?).to eq(false)
+        expect(subject.failed?).to eq(false)
+        expect(subject.success?).to eq(true)
+        expect(subject.errors).to be_empty
+        expect(subject.messages).to be_empty
+        expect(subject.exception).to be_nil
+      end
+    end
+
+    context 'when the logic is specified as a symbol' do
+      let(:logic) { :hello }
+
+      let(:instance) { impl.new }
+
+      let(:restricted_applicant) do
+        instance.send(:restrict_attributes, applicant)
+      end
+
+      subject { instance.proof(applicant) }
+
+      it 'returns a successful result' do
+        expect(instance).to receive(:hello).
+          with(restricted_applicant, an_instance_of(Proofer::Result))
+        expect(subject.exception?).to eq(false)
+        expect(subject.failed?).to eq(false)
+        expect(subject.success?).to eq(true)
+        expect(subject.errors).to be_empty
+        expect(subject.messages).to be_empty
+        expect(subject.exception).to be_nil
       end
     end
   end

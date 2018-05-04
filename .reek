@@ -22,6 +22,7 @@ NilCheck:
 ControlParameter:
   exclude:
     - Proofer::Vendor::Mock#submit_phone
+    - Proofer::Base#proof
 TooManyStatements:
   max_statements: 8
 TooManyMethods:

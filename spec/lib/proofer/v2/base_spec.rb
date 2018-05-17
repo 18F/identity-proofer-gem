@@ -18,19 +18,19 @@ describe Proofer::Base do
     }
   end
 
-  describe '.required_attributes' do
+  describe '.attributes' do
     let(:attributes) { %i[foo bar] }
-    it 'stores the required attributes and exposes them via `required_attributes`' do
+    it 'stores the required attributes and exposes them via `attributes`' do
       impl.attributes(*attributes)
-      expect(impl.required_attributes).to eq(attributes)
+      expect(impl.attributes).to eq(attributes)
     end
   end
 
   describe '.stage' do
     let(:stage) { :foo }
-    it 'stores the stage and exposes it via `suuported_stage`' do
+    it 'stores the stage and exposes it via `stage`' do
       impl.stage(stage)
-      expect(impl.supported_stage).to eq(stage)
+      expect(impl.stage).to eq(stage)
     end
   end
 
@@ -52,10 +52,10 @@ describe Proofer::Base do
     end
   end
 
-  describe '.name' do
+  describe '.vendor_name' do
     let(:name) { 'foobar:baz' }
     it 'stores the name and exposes it via `vendor_name`' do
-      impl.name(name)
+      impl.vendor_name(name)
       expect(impl.vendor_name).to eq(name)
     end
   end
@@ -206,6 +206,25 @@ describe Proofer::Base do
       it 'returns a successful result' do
         expect(instance).to receive(:hello).
           with(restricted_applicant, an_instance_of(Proofer::Result))
+        expect(subject.exception?).to eq(false)
+        expect(subject.failed?).to eq(false)
+        expect(subject.success?).to eq(true)
+        expect(subject.errors).to be_empty
+        expect(subject.messages).to be_empty
+        expect(subject.exception).to be_nil
+      end
+    end
+
+    context 'when another proofer exists' do
+      let(:logic) { proc {} }
+
+      subject { impl.new.proof(applicant) }
+
+      it 'does not affect the other proofer' do
+        impl2 = Class.new(Proofer::Base) do
+          attributes :foobarbaz
+        end
+
         expect(subject.exception?).to eq(false)
         expect(subject.failed?).to eq(false)
         expect(subject.success?).to eq(true)

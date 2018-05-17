@@ -23,7 +23,12 @@ ControlParameter:
   exclude:
     - Proofer::Vendor::Mock#submit_phone
     - Proofer::Base#proof
+    - Proofer::Base#stage
+    - Proofer::Base#vendor_name
 TooManyStatements:
   max_statements: 8
 TooManyMethods:
   max_methods: 20
+InstanceVariableAssumption:
+  exclude:
+      - 'Proofer::Base'

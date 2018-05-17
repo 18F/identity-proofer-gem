@@ -221,9 +221,12 @@ describe Proofer::Base do
       subject { impl.new.proof(applicant) }
 
       it 'does not affect the other proofer' do
+        # rubocop:disable Lint/UselessAssignment
+        # This is an explicit check for class-level side effects
         impl2 = Class.new(Proofer::Base) do
           attributes :foobarbaz
         end
+        # rubocop:enable Lint/UselessAssignment
 
         expect(subject.exception?).to eq(false)
         expect(subject.failed?).to eq(false)

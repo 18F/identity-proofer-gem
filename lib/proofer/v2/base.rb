@@ -2,19 +2,23 @@ require 'set'
 
 module Proofer
   class Base
-    class << self
-      attr_reader :required_attributes, :supported_stage, :proofer, :vendor_name
+    @vendor_name = nil
+    @attributes = []
+    @stage = nil
 
-      def name(name)
-        @vendor_name = name
+    class << self
+      attr_reader :proofer
+
+      def vendor_name(name = nil)
+        @vendor_name = name || @vendor_name
       end
 
       def attributes(*attributes)
-        @required_attributes = attributes
+        @attributes = attributes.empty? ? @attributes : attributes
       end
 
-      def stage(stage)
-        @supported_stage = stage
+      def stage(stage = nil)
+        @stage = stage || @stage
       end
 
       def proof(sym = nil, &block)
@@ -43,26 +47,26 @@ module Proofer
     end
 
     def restrict_attributes(applicant)
-      applicant.select { |attribute| required_attributes.include?(attribute) }
+      applicant.select { |attribute| attributes.include?(attribute) }
     end
 
     def validate_attributes(applicant)
       empty_attributes = applicant.select { |_, attribute| blank?(attribute) }.keys
-      missing_attributes = required_attributes - applicant.keys
+      missing_attributes = attributes - applicant.keys
       bad_attributes = (empty_attributes | missing_attributes)
       raise error_message(bad_attributes) if bad_attributes.any?
     end
 
-    def error_message(attributes)
-      "Required attributes #{attributes.join(', ')} are not present"
+    def error_message(required_attributes)
+      "Required attributes #{required_attributes.join(', ')} are not present"
     end
 
-    def required_attributes
-      self.class.required_attributes
+    def attributes
+      self.class.attributes
     end
 
-    def supported_stage
-      self.class.supported_stage
+    def stage
+      self.class.stage
     end
 
     def proofer

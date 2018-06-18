@@ -259,7 +259,7 @@ describe Proofer::Vendor::Mock do
     it 'fails with all fives' do
       mocker = described_class.new applicant: applicant
       resolution = mocker.start
-      confirmation = mocker.submit_phone('(555) 555-5555', resolution.session_id)
+      confirmation = mocker.submit_phone('(202) 555-5555', resolution.session_id)
 
       expect(confirmation.success).to eq false
       expect(confirmation.errors).to eq(phone: 'The phone number could not be verified.')

@@ -27,8 +27,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.3.0'
 
   s.add_development_dependency('bundler')
-  s.add_development_dependency('dotenv')
-  s.add_development_dependency('rake')
   s.add_development_dependency('reek')
   s.add_development_dependency('rspec')
   s.add_development_dependency('rubocop')

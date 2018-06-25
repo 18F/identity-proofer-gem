@@ -6,56 +6,44 @@
 ## Example proofing session
 
 ```ruby
-applicant = {
-  first_name: 'Some',
-  last_name: 'One',
-  dob: '19700501',
-  ssn: '666123456',
-  address1: '1234 Main St',
-  city: 'St. Somewhere',
-  state: 'KS',
-  zipcode: '66666'
-}
+# Create a proofer subclass:
+class FooProofer
+  vendor_name 'foo:resolution'
 
+  attributes :uuid,
+             :first_name,
+             :last_name,
+             :ssn,
+             :dob
 
-# Initialize a proofer
-agent = Proofer::Agent.new(
-  applicant: applicant,
-  vendor: :mock,
-  kbv: false
+  stage :resolution
+
+  proof :foo_proof # this also takes a block
+
+  def foo_proof(applicant, result)
+    resolution = get_resolution # resolve the identity
+
+    # if something isn't verified, add an error
+    resolution.add_error(:first_name, 'Does not match')
+
+    # if something goes wrong, raise an error
+    raise 'failed to auth with the proofing vendor'
+  end
+end
+
+# Use a vendor subclass
+proofer = FooProofer.new.proof(
+  uuid: '1234-asdf-5678-qwerty',
+  first_name: 'Bob',
+  last_name: 'Roberts',
+  ssn: '123456789',
+  dob: '01/01/1980'
 )
 
-# Start a proofing session
-resolution = agent.start(applicant)
-resolution.success? # => true
-resolution.session_id # => 123abc
-resolution.errors # A hash of errors if errors occur
-
-# Submit Financials
-# Works with :ccn, :mortgage, :home_equity_line, :auto_loan
-confirmation = agent.submit_financials(
-  { ccn: '12345678' },
-  resolution.session_id
-)
-confirmation.success? # => true
-confirmation.errors # A hash of errors if errors occur
-
-# Submit financials w/ a bank account
-confirmation = agent.submit_financials(
-  bank_account: '123456789',
-  bank_account_type: :savings,
-  bank_routing: '987654321',
-)
-confirmation.success? # => true
-confirmation.errors # A hash of errors if errors occur
-
-# Submit Phone
-confirmation = agent.submit_phone(
-  '2065555000',
-  resolution.session_id
-)
-confirmation.success? # => true
-confirmation.errors # A hash of errors if errors occur
+proofer.success? # returns true or false
+proofer.failed? # returns true or false
+proofer.errors # returns a hash of errors, e.g. { first_name: ['Does not match'] }
+subject.exception # returns any object that was raised during the `#proof` call
 ```
 
 ## Public domain

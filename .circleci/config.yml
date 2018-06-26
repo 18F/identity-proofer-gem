@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # Specify the Ruby version you desire here
-      - image: circleci/ruby:2.3.4
+      - image: circleci/ruby:2.5.1
         environment:
           CC_TEST_REPORTER_ID: b492957f6df97f9c3079b494cf578be9ec52420edf592293f471c111217efca6
 

@@ -5,7 +5,7 @@
 # https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml
 
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.5
   UseCache: true
   Exclude:
     - 'Gemfile'

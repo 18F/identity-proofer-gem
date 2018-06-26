@@ -7,7 +7,7 @@
 
 ```ruby
 # Create a proofer subclass:
-class FooProofer
+class FooProofer < Proofer::Base
   vendor_name 'foo:resolution'
 
   attributes :uuid,
@@ -24,7 +24,7 @@ class FooProofer
     resolution = get_resolution # resolve the identity
 
     # if something isn't verified, add an error
-    resolution.add_error(:first_name, 'Does not match')
+    result.add_error(:first_name, 'Does not match')
 
     # if something goes wrong, raise an error
     raise 'failed to auth with the proofing vendor'
@@ -32,7 +32,7 @@ class FooProofer
 end
 
 # Use a vendor subclass
-proofer = FooProofer.new.proof(
+result = FooProofer.new.proof(
   uuid: '1234-asdf-5678-qwerty',
   first_name: 'Bob',
   last_name: 'Roberts',
@@ -40,10 +40,10 @@ proofer = FooProofer.new.proof(
   dob: '01/01/1980'
 )
 
-proofer.success? # returns true or false
-proofer.failed? # returns true or false
-proofer.errors # returns a hash of errors, e.g. { first_name: ['Does not match'] }
-subject.exception # returns any object that was raised during the `#proof` call
+result.success? # returns true or false
+result.failed? # returns true or false
+result.errors # returns a hash of errors, e.g. { first_name: ['Does not match'] }
+result.exception # returns any object that was raised during the `#proof` call
 ```
 
 ## Public domain

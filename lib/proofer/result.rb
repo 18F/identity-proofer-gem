@@ -24,7 +24,7 @@ module Proofer
 
     def errors
       # Hack city since `transform_values` isn't available until Ruby 2.4
-      @errors.merge(@errors) { |_, error_set| error_set.to_a }
+      @errors.transform_values(&:to_a)
     end
 
     def messages

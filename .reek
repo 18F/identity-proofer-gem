@@ -29,6 +29,9 @@ TooManyStatements:
   max_statements: 8
 TooManyMethods:
   max_methods: 20
+TooManyInstanceVariables:
+  exclude:
+    - Proofer::Base
 InstanceVariableAssumption:
   exclude:
       - 'Proofer::Base'

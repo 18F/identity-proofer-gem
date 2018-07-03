@@ -3,7 +3,8 @@ require 'set'
 module Proofer
   class Base
     @vendor_name = nil
-    @attributes = []
+    @required_attributes = []
+    @optional_attributes = []
     @stage = nil
 
     class << self
@@ -13,8 +14,18 @@ module Proofer
         @vendor_name = name || @vendor_name
       end
 
-      def attributes(*attributes)
-        @attributes = attributes.empty? ? @attributes : attributes
+      def required_attributes(*required_attributes)
+        return @required_attributes if required_attributes.empty?
+        @required_attributes = required_attributes
+      end
+
+      def optional_attributes(*optional_attributes)
+        return @optional_attributes if optional_attributes.empty?
+        @optional_attributes = optional_attributes
+      end
+
+      def attributes
+        required_attributes.concat optional_attributes
       end
 
       def stage(stage = nil)
@@ -53,12 +64,20 @@ module Proofer
     def validate_attributes(applicant)
       empty_attributes = applicant.select { |_, attribute| blank?(attribute) }.keys
       missing_attributes = attributes - applicant.keys
-      bad_attributes = (empty_attributes | missing_attributes)
+      bad_attributes = (empty_attributes | missing_attributes) - optional_attributes
       raise error_message(bad_attributes) if bad_attributes.any?
     end
 
     def error_message(required_attributes)
       "Required attributes #{required_attributes.join(', ')} are not present"
+    end
+
+    def required_attributes
+      self.class.required_attributes
+    end
+
+    def optional_attributes
+      self.class.optional_attributes
     end
 
     def attributes

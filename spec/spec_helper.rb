@@ -1,3 +1,5 @@
+require 'pry-byebug'
+
 require 'simplecov'
 SimpleCov.start
 

@@ -18,11 +18,29 @@ describe Proofer::Base do
     }
   end
 
-  describe '.attributes' do
+  describe '.required_attributes' do
     let(:attributes) { %i[foo bar] }
-    it 'stores the required attributes and exposes them via `attributes`' do
-      impl.attributes(*attributes)
-      expect(impl.attributes).to eq(attributes)
+    it 'stores the required attributes and exposes them via `required_attributes`' do
+      impl.required_attributes(*attributes)
+      expect(impl.required_attributes).to eq(attributes)
+    end
+  end
+
+  describe '.optional_attributes' do
+    let(:attributes) { %i[foo bar] }
+    it 'stores the optional attributes and exposes them via `optional_attributes`' do
+      impl.optional_attributes(*attributes)
+      expect(impl.optional_attributes).to eq(attributes)
+    end
+  end
+
+  describe '.attributes' do
+    let(:required_attributes) { %i[foo bar] }
+    let(:optional_attributes) { %i[abc xyz] }
+    it 'returns the list of combined required and optional attributes' do
+      impl.required_attributes(*required_attributes)
+      impl.optional_attributes(*optional_attributes)
+      expect(impl.attributes).to eq(%i[foo bar abc xyz])
     end
   end
 
@@ -61,9 +79,10 @@ describe Proofer::Base do
   end
 
   describe '#restrict_attributes' do
-    let(:attributes) { %i[last_name ssn] }
-
-    before { impl.attributes(*attributes) }
+    before do
+      impl.required_attributes(:last_name)
+      impl.optional_attributes(:ssn)
+    end
 
     it 'is a hash containing only the keys listed in attributes' do
       restricted_attributes = impl.new.send(:restrict_attributes, applicant)
@@ -73,14 +92,18 @@ describe Proofer::Base do
   end
 
   describe '#validate_attributes' do
-    let(:attributes) { %i[first_name last_name] }
+    let(:required_attributes) { %i[first_name last_name] }
+    let(:optional_attributes) { %i[ssn] }
 
-    before { impl.attributes(*attributes) }
+    before do
+      impl.required_attributes(*required_attributes)
+      impl.optional_attributes(*optional_attributes)
+    end
 
     subject { impl.new.send(:validate_attributes, applicant) }
 
     context 'when all attributes are present' do
-      let(:applicant) { { first_name: 'Homer', last_name: 'Simpson' } }
+      let(:applicant) { { first_name: 'Homer', last_name: 'Simpson', ssn: '123456789' } }
 
       it 'does not raise' do
         expect { subject }.not_to raise_exception
@@ -95,11 +118,20 @@ describe Proofer::Base do
           to raise_exception('Required attributes first_name, last_name are not present')
       end
     end
+
+    context 'when optional attributes are not present' do
+      let(:applicant) { { first_name: 'Homer', last_name: 'Simpson' } }
+
+      it 'does not raise' do
+        expect { subject }.not_to raise_exception
+      end
+    end
   end
 
   describe '#proof' do
     before do
-      impl.attributes :first_name, :last_name, :ssn
+      impl.required_attributes :first_name, :last_name, :ssn
+      impl.optional_attributes :dob
       impl.proof(logic)
     end
 
@@ -224,7 +256,7 @@ describe Proofer::Base do
         # rubocop:disable Lint/UselessAssignment
         # This is an explicit check for class-level side effects
         impl2 = Class.new(Proofer::Base) do
-          attributes :foobarbaz
+          required_attributes :foobarbaz
         end
         # rubocop:enable Lint/UselessAssignment
 

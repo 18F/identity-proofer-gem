@@ -15,12 +15,12 @@ module Proofer
       end
 
       def required_attributes(*required_attributes)
-        return @required_attributes if required_attributes.empty?
+        return @required_attributes || [] if required_attributes.empty?
         @required_attributes = required_attributes
       end
 
       def optional_attributes(*optional_attributes)
-        return @optional_attributes if optional_attributes.empty?
+        return @optional_attributes || [] if optional_attributes.empty?
         @optional_attributes = optional_attributes
       end
 

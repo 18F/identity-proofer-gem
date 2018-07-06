@@ -37,10 +37,16 @@ describe Proofer::Base do
   describe '.attributes' do
     let(:required_attributes) { %i[foo bar] }
     let(:optional_attributes) { %i[abc xyz] }
+
     it 'returns the list of combined required and optional attributes' do
       impl.required_attributes(*required_attributes)
       impl.optional_attributes(*optional_attributes)
       expect(impl.attributes).to eq(%i[foo bar abc xyz])
+    end
+
+    it 'does not raise if optional attributes are not specified' do
+      impl.required_attributes(*required_attributes)
+      expect(impl.required_attributes).to eq(required_attributes)
     end
   end
 

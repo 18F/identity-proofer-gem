@@ -47,6 +47,10 @@ module Proofer
       !exception? && !errors?
     end
 
+    def timed_out?
+      exception? && @exception.is_a?(Proofer::TimeoutError)
+    end
+
     def to_h
       {
         errors: errors,

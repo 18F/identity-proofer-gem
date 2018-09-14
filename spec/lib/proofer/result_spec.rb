@@ -97,6 +97,25 @@ describe Proofer::Result do
     end
   end
 
+  describe '#timed_out?' do
+    subject { result.timed_out? }
+
+    context 'when there is a timeout error' do
+      let(:result) { Proofer::Result.new(exception: Proofer::TimeoutError.new) }
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when there is a generic error' do
+      let(:result) { Proofer::Result.new(exception: StandardError.new) }
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when there is no error' do
+      let(:result) { Proofer::Result.new }
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe 'context' do
     context 'when provided' do
       it 'is present' do

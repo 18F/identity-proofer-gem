@@ -48,7 +48,7 @@ module Proofer
     end
 
     def timed_out?
-      exception? && @exception.is_a?(Proofer::TimeoutError)
+      @exception.is_a?(Proofer::TimeoutError)
     end
 
     def to_h

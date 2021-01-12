@@ -1,13 +1,14 @@
 module Proofer
   class Result
     attr_reader :exception
-    attr_accessor :context
+    attr_accessor :context, :transaction_id
 
-    def initialize(errors: {}, messages: Set.new, context: {}, exception: nil)
+    def initialize(errors: {}, messages: Set.new, context: {}, exception: nil, transaction_id: '')
       @errors = errors
       @messages = messages
       @context = context
       @exception = exception
+      @transaction_id = transaction_id
     end
 
     # rubocop:disable Style/OptionalArguments

@@ -195,8 +195,8 @@ describe Proofer::Base do
 
       it 'returns a result with an exception' do
         expect(subject.exception?).to eq(true)
-        expect(subject.failed?).to eq(false)
         expect(subject.success?).to eq(false)
+        expect(subject.failed?).to eq(false)
         expect(subject.errors).to be_empty
         expect(subject.messages).to be_empty
         expect(subject.exception).not_to be_nil

@@ -126,4 +126,15 @@ describe Proofer::Result do
       end
     end
   end
+
+  describe 'transaction_id' do
+    context 'when provided' do
+      it 'is present' do
+        transaction_id = 'foo'
+        result = Proofer::Result.new
+        result.transaction_id = transaction_id
+        expect(result.transaction_id).to eq(transaction_id)
+      end
+    end
+  end
 end

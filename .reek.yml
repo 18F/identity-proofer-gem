@@ -35,3 +35,4 @@ detectors:
   InstanceVariableAssumption:
     exclude:
         - 'Proofer::Base'
+        - 'Proofer::Result'

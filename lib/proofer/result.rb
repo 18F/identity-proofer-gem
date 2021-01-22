@@ -3,7 +3,7 @@ module Proofer
     attr_reader :exception
     attr_accessor :context, :transaction_id
 
-    def initialize(errors: {}, messages: Set.new, context: {}, exception: nil, transaction_id: '')
+    def initialize(errors: {}, messages: Set.new, context: {}, exception: nil, transaction_id: nil)
       @errors = errors
       @messages = messages
       @context = context

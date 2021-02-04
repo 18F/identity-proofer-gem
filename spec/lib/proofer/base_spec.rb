@@ -99,7 +99,7 @@ describe Proofer::Base do
 
   describe '#validate_attributes' do
     let(:required_attributes) { %i[first_name last_name] }
-    let(:optional_attributes) { %i[ssn] }
+    let(:optional_attributes) { %i[ssn some_boolean_feature] }
 
     before do
       impl.required_attributes(*required_attributes)
@@ -127,6 +127,14 @@ describe Proofer::Base do
 
     context 'when optional attributes are not present' do
       let(:applicant) { { first_name: 'Homer', last_name: 'Simpson' } }
+
+      it 'does not raise' do
+        expect { subject }.not_to raise_exception
+      end
+    end
+
+    context 'when optional attributes are booleans' do
+      let(:applicant) { { first_name: 'Homer', last_name: 'Simpson', some_boolean_feature: true } }
 
       it 'does not raise' do
         expect { subject }.not_to raise_exception

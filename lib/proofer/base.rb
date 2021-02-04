@@ -93,7 +93,7 @@ module Proofer
     end
 
     def blank?(val)
-      !val || val.empty?
+      !val || val.to_s.empty?
     end
   end
 end
